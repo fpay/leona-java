@@ -30,11 +30,18 @@ public class CommonUtil {
         return NVLL(str1).isEmpty();
     }
 
+    /**
+     * "" 等同于null处理
+     *
+     * @param str1
+     * @param str2
+     * @return
+     */
     public static Boolean equals(String str1, String str2) {
         return NVLL(str1).equals(NVLL(str2));
     }
 
-    private static Random random=new Random();
+    private static Random random = new Random();
 
     public static byte[] subBytes(byte[] src, int begin, int count) {
         byte[] bs = new byte[count];
@@ -42,7 +49,7 @@ public class CommonUtil {
         return bs;
     }
 
-    public static String readPemFile2String(String fileName) throws IOException, UnsupportedEncodingException {
+    public static String readPemFile2String(String fileName) throws IOException {
         File file = new File(fileName);
         Long filelength = file.length();
         byte[] filecontent = new byte[filelength.intValue()];
@@ -50,12 +57,12 @@ public class CommonUtil {
         try {
             in = new FileInputStream(file);
             in.read(filecontent);
-        } finally{
-            try{
-                if(in != null){
+        } finally {
+            try {
+                if (in != null) {
                     in.close();
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -73,24 +80,30 @@ public class CommonUtil {
      * @param max 最大长度
      * @return
      */
-    public static String randomStr(int min, int max){
-        String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public static String randomStr(int min, int max) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-        final int length = random.nextInt(max -min + 1) + min;
-        StringBuffer sb=new StringBuffer();
-        for(int i=0;i<length;i++){
-            int number=random.nextInt(62);
+        final int length = random.nextInt(max - min + 1) + min;
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(62);
             sb.append(str.charAt(number));
         }
         return sb.toString();
     }
 
-    public static String randomStr(int length){
-        String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    /**
+     * 生成固定长度随机串
+     *
+     * @param length
+     * @return
+     */
+    public static String randomStr(int length) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-        StringBuffer sb=new StringBuffer();
-        for(int i=0;i<length;i++){
-            int number=random.nextInt(62);
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(62);
             sb.append(str.charAt(number));
         }
         return sb.toString();

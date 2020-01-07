@@ -2,23 +2,20 @@ package com.lehuipay.leona.interceptor;
 
 import com.lehuipay.leona.Const;
 import com.lehuipay.leona.contracts.Signer;
-import com.lehuipay.leona.exception.LeonaErrorCodeEnum;
 import com.lehuipay.leona.exception.LeonaRuntimeException;
 import com.lehuipay.leona.utils.CommonUtil;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HttpContext;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class SignInterceptor implements HttpRequestInterceptor, HttpResponseInterceptor {
+public class SignInterceptor implements Interceptor {
 
-    private static final String CHARSET = "utf-8";
+    private final MediaType mediaTypeJSON = MediaType.parse("application/json; charset=utf-8");
 
     public SignInterceptor(Signer signer, String agentID) {
         this.signer = signer;
@@ -29,34 +26,40 @@ public class SignInterceptor implements HttpRequestInterceptor, HttpResponseInte
 
     private String agentID;
 
-    @Override
-    public void process(HttpRequest httpRequest, HttpContext httpContext) throws IOException {
-        // https://www.programcreek.com/java-api-examples/?api=org.apache.http.HttpEntity
-        HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) httpRequest;
-        HttpEntity entity = entityRequest.getEntity();
-        final String body = CommonUtil.inputStream2String(entity.getContent());
-
-        String nonce = CommonUtil.randomStr(Const.NONCE_MIN_LENGTH, Const.NONCE_MAX_LENTH);
-        final String sign = signer.sign(body, nonce);
-
-        httpRequest.setHeader(Const.HEADER_X_LEHUI_AGENTID, agentID);
-        httpRequest.setHeader(Const.HEADER_X_LEHUI_NONCE, nonce);
-        httpRequest.setHeader(Const.HEADER_X_LEHUI_SIGNATURE, sign);
-
+    private String generateNonce() {
+        return CommonUtil.randomStr(Const.NONCE_MIN_LENGTH, Const.NONCE_MAX_LENTH);
     }
 
+    @NotNull
     @Override
-    public void process(HttpResponse httpResponse, HttpContext httpContext) throws IOException {
-        if (httpResponse.containsHeader(Const.HEADER_X_LEHUI_NONCE) &&
-                httpResponse.containsHeader(Const.HEADER_X_LEHUI_SIGNATURE)) {
-            final String nonce = httpResponse.getFirstHeader(Const.HEADER_X_LEHUI_NONCE).getValue();
-            final String signature = httpResponse.getFirstHeader(Const.HEADER_X_LEHUI_SIGNATURE).getValue();
-            final HttpEntity entity = httpResponse.getEntity();
-            String body = CommonUtil.inputStream2String(entity.getContent());
-            httpResponse.setEntity(new StringEntity(body, CHARSET));
-            if (!signer.verify(body, nonce, signature)) {
-                throw new LeonaRuntimeException(LeonaErrorCodeEnum.VERIFY_FAIL);
-            }
+    public Response intercept(@NotNull Chain chain) throws IOException {
+        Request request = chain.request();
+        final String body = InterceptorHelper.requestBody2String(request);
+
+        // request加签
+        final String nonce = generateNonce();
+        final String sign = signer.sign(body, nonce);
+
+        request = request.newBuilder()
+                .addHeader(Const.HEADER_X_LEHUI_AGENTID, agentID)
+                .addHeader(Const.HEADER_X_LEHUI_NONCE, nonce)
+                .addHeader(Const.HEADER_X_LEHUI_SIGNATURE, sign)
+                .build();
+
+        final Response response = chain.proceed(request);
+
+        // response验签
+        String content = response.body().string();
+        final String respBody = CommonUtil.NVLL(content);
+        final String respNonce = CommonUtil.NVLL(response.header(Const.HEADER_X_LEHUI_NONCE));
+        final String respSignature = CommonUtil.NVLL(response.header(Const.HEADER_X_LEHUI_SIGNATURE));
+
+        if (!signer.verify(respBody, respNonce, respSignature)) {
+            throw new LeonaRuntimeException("invalid response signature");
         }
+
+        return response.newBuilder()
+                .body(ResponseBody.create(content, mediaTypeJSON))
+                .build();
     }
 }

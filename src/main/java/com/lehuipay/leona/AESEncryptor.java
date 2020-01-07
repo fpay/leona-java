@@ -1,10 +1,10 @@
 package com.lehuipay.leona;
 
-import com.lehuipay.leona.contracts.SymmEncryptor;
+import com.lehuipay.leona.contracts.SymmetricEncryptor;
 import com.lehuipay.leona.utils.AESPKCS7;
 import com.lehuipay.leona.utils.CommonUtil;
 
-public class AESEncryptor implements SymmEncryptor {
+public class AESEncryptor implements SymmetricEncryptor {
 
     AESPKCS7 aes = new AESPKCS7();
 

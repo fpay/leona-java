@@ -1,5 +1,6 @@
 package com.lehuipay.leona.exception;
 
+import com.lehuipay.leona.contracts.ErrorCode;
 import com.lehuipay.leona.utils.CommonUtil;
 
 public enum LeonaErrorCodeEnum implements ErrorCode {
@@ -46,8 +47,8 @@ public enum LeonaErrorCodeEnum implements ErrorCode {
     private final String message;
 
     /**
-     * @param code      错误码
-     * @param message   描述
+     * @param code    错误码
+     * @param message 描述
      */
     private LeonaErrorCodeEnum(final String type, final String code, final String message) {
         this.type = type;

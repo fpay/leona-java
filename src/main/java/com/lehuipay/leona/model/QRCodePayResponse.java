@@ -4,16 +4,16 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 public class QRCodePayResponse {
 
-    @JSONField(name="transaction_id")
+    @JSONField(name = "transaction_id")
     private String transactionID;
 
-    @JSONField(name="order_no")
+    @JSONField(name = "order_no")
     private String orderNo;
 
-    @JSONField(name="merchant_id")
+    @JSONField(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name="url")
+    @JSONField(name = "url")
     private String url;
 
     public String getTransactionID() {

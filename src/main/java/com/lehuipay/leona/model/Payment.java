@@ -4,52 +4,52 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 public class Payment {
 
-    @JSONField(name="transaction_id")
+    @JSONField(name = "transaction_id")
     private String transactionID;
 
-    @JSONField(name="order_no")
+    @JSONField(name = "order_no")
     private String orderNo;
 
-    @JSONField(name="upstream_order_no")
+    @JSONField(name = "upstream_order_no")
     private String upstreamOrderNo;
 
-    @JSONField(name="merchant_order_no")
+    @JSONField(name = "merchant_order_no")
     private String merchantOrderNo;
 
-    @JSONField(name="merchant_id")
+    @JSONField(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name="terminal_id")
+    @JSONField(name = "terminal_id")
     private String terminalID;
 
-    @JSONField(name="app_id")
+    @JSONField(name = "app_id")
     private String appID;
 
-    @JSONField(name="buyer_id")
+    @JSONField(name = "buyer_id")
     private String buyerID;
 
-    @JSONField(name="amount")
+    @JSONField(name = "amount")
     private Integer amount;
 
-    @JSONField(name="status")
+    @JSONField(name = "status")
     private String status;
 
-    @JSONField(name="client_type")
+    @JSONField(name = "client_type")
     private String clientType;
 
-    @JSONField(name="trade_type")
+    @JSONField(name = "trade_type")
     private String tradeType;
 
-    @JSONField(name="hint")
+    @JSONField(name = "hint")
     private String hint;
 
-    @JSONField(name="reason")
+    @JSONField(name = "reason")
     private String reason;
 
-    @JSONField(name="finished_at")
+    @JSONField(name = "finished_at")
     private Integer finishedAt;
 
-    @JSONField(name="created_at")
+    @JSONField(name = "created_at")
     private Integer createdAt;
 
     public String getTransactionID() {

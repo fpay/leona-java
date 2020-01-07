@@ -17,15 +17,14 @@ import java.security.Security;
 import java.util.Arrays;
 
 /**
- *
  * AES128 算法
- *
+ * <p>
  * CBC 模式
- *
+ * <p>
  * PKCS7Padding 填充模式
- *
+ * <p>
  * CBC模式需要添加一个参数iv
- *
+ * <p>
  * 介于java 不支持PKCS7Padding，只支持PKCS5Padding 但是PKCS7Padding 和 PKCS5Padding 没有什么区别
  * 要实现在java端用PKCS7Padding填充，需要用到bouncycastle组件来实现
  */
@@ -64,12 +63,9 @@ public class AESPKCS7 {
     /**
      * 加密方法, 不对结果进行base64二次加密
      *
-     * @param content
-     *            要加密的字符串
-     * @param keyBytes
-     *            加密密钥
-     * @param iv
-     *            向量
+     * @param content  要加密的字符串
+     * @param keyBytes 加密密钥
+     * @param iv       向量
      * @return
      */
     public byte[] encrypt(byte[] content, byte[] keyBytes, byte[] iv) {
@@ -89,14 +85,10 @@ public class AESPKCS7 {
     /**
      * 加密方法
      *
-     * @param content
-     *              要加密的字符串
-     * @param keyBytes
-     *              加密密钥
-     * @param iv
-     *              向量
-     * @return
-     *              base64Encode(iv + encryptedBody)
+     * @param content  要加密的字符串
+     * @param keyBytes 加密密钥
+     * @param iv       向量
+     * @return base64Encode(iv + encryptedBody)
      */
     public String encryptWithIVBase64(byte[] content, byte[] keyBytes, byte[] iv) {
         final byte[] encrypted;
@@ -105,7 +97,7 @@ public class AESPKCS7 {
         } catch (LeonaRuntimeException e) {
             throw new LeonaRuntimeException(LeonaErrorCodeEnum.ENCRYPTION_FAIL, e);
         }
-        byte[] tmp = new byte[iv.length+encrypted.length];
+        byte[] tmp = new byte[iv.length + encrypted.length];
         System.arraycopy(iv, 0, tmp, 0, iv.length);
         System.arraycopy(encrypted, 0, tmp, iv.length, encrypted.length);
         return new Base64().encodeToString(tmp);
@@ -114,12 +106,9 @@ public class AESPKCS7 {
     /**
      * 解密方法
      *
-     * @param encryptedData
-     *              要解密的字符串
-     * @param keyBytes
-     *              解密密钥
-     * @param iv
-     *              向量
+     * @param encryptedData 要解密的字符串
+     * @param keyBytes      解密密钥
+     * @param iv            向量
      * @return
      */
     public byte[] decrypt(byte[] encryptedData, byte[] keyBytes, byte[] iv) {
@@ -139,12 +128,9 @@ public class AESPKCS7 {
     /**
      * 解密方法
      *
-     * @param encryptedDataBase64
-     *              要解密的字符串, 格式为base64Encode(iv + encryptedBody)
-     * @param keyBytes
-     *              解密密钥
-     * @param ivLength
-     *              附加到密文最前方的iv长度
+     * @param encryptedDataBase64 要解密的字符串, 格式为base64Encode(iv + encryptedBody)
+     * @param keyBytes            解密密钥
+     * @param ivLength            附加到密文最前方的iv长度
      * @return
      */
     public byte[] decryptWithIVBase64(String encryptedDataBase64, byte[] keyBytes, int ivLength) {

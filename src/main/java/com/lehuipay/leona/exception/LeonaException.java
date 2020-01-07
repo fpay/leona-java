@@ -1,11 +1,19 @@
 package com.lehuipay.leona.exception;
 
+import com.lehuipay.leona.model.ErrorMessage;
+
 public class LeonaException extends Exception {
 
     public LeonaException(String type, String code, String message) {
         this.type = type;
         this.code = code;
         this.message = message;
+    }
+
+    public LeonaException(ErrorMessage errorMessage) {
+        this.type = errorMessage.getType();
+        this.code = errorMessage.getCode();
+        this.message = errorMessage.getMessage();
     }
 
     public LeonaException(LeonaRuntimeException e) {

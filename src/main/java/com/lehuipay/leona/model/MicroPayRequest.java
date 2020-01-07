@@ -31,22 +31,22 @@ public class MicroPayRequest {
         this.notifyURL = notifyURL;
     }
 
-    @JSONField(name="merchant_id")
+    @JSONField(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name="terminal_id")
+    @JSONField(name = "terminal_id")
     private String terminalID;
 
-    @JSONField(name="order_no")
+    @JSONField(name = "order_no")
     private String orderNo;
 
-    @JSONField(name="amount")
+    @JSONField(name = "amount")
     private Integer amount;
 
-    @JSONField(name="auth_code")
+    @JSONField(name = "auth_code")
     private String authCode;
 
-    @JSONField(name="notify_url")
+    @JSONField(name = "notify_url")
     private String notifyURL;
 
     public String getMerchantID() {

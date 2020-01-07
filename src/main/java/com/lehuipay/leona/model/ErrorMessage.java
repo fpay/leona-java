@@ -1,8 +1,9 @@
 package com.lehuipay.leona.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.lehuipay.leona.contracts.ErrorCode;
 
-public class ErrorMessage {
+public class ErrorMessage implements ErrorCode {
 
     @JSONField(name = "type")
     private String type;

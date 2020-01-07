@@ -3,7 +3,7 @@ package com.lehuipay.leona.contracts;
 /**
  * 非对称加密
  */
-public interface AsymEncryptor {
+public interface AsymmetricEncryptor {
 
     byte[] pubEncode(String data);
 
@@ -12,5 +12,4 @@ public interface AsymEncryptor {
     byte[] sign(byte[] data);
 
     boolean verify(byte[] content, byte[] sign);
-
 }

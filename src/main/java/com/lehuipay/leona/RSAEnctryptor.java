@@ -1,13 +1,13 @@
 package com.lehuipay.leona;
 
-import com.lehuipay.leona.contracts.AsymEncryptor;
+import com.lehuipay.leona.contracts.AsymmetricEncryptor;
 import com.lehuipay.leona.utils.RSAEncrypt;
 import com.lehuipay.leona.utils.CommonUtil;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
-public class RSAEnctryptor implements AsymEncryptor {
+public class RSAEnctryptor implements AsymmetricEncryptor {
 
     public RSAEnctryptor(String partnerPriKey, String lhPubKey) {
         if (CommonUtil.isEmpty(partnerPriKey) || CommonUtil.isEmpty(lhPubKey)) {

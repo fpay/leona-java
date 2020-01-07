@@ -13,55 +13,64 @@ import com.lehuipay.leona.model.Refund;
 import com.lehuipay.leona.model.RefundRequest;
 import com.lehuipay.leona.utils.CommonUtil;
 
-import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * LeonaClient一个线程安全的,可复用的客户端工具类
- * 多个请求可以使用同一个LeonaClient实例, 避免重复初始化
+ * LeonaClient一个线程安全的, 支持异步的, 可复用的客户端工具类
+ * 多个请求请使用同一个LeonaClient实例, 避免重复初始化
  *
  * <code>
- *     Leona client = new LeonaClient
- *                 .Builder(agent_id, agent_key)
- *                 .setPartnerPriKey(lhPubKey)
- *                 .setLhPubKey(partnerPriKey)
+ * Leona client = new LeonaClient
+ * .Builder(agent_id, agent_key)
+ * .setPartnerPriKey(lhPubKey)
+ * .setLhPubKey(partnerPriKey)
  * //                .setSecretKey(secret_key)
- *                 .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
- *                 .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
- *                 .build();
+ * .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
+ * .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
+ * .build();
+ * <p>
+ * // 异步
+ * try {
+ * final GetOrderRequest req = new GetOrderRequest(merchantID, "xxxxx", null);
+ * client.getOrder(req, (e, data) -> {
+ * if (e != null) {
+ * String type = e.getType();
+ * String code = e.getCode();
+ * String message = e.getMessage();
+ * System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
+ * return;
+ * }
+ * System.out.println(data);
+ * });
+ * } catch (LeonaException e) {
+ * String type = e.getType();
+ * String code = e.getCode();
+ * String message = e.getMessage();
+ * System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
+ * }
+ * <p>
+ * // 同步
+ * try {
+ * final GetOrderRequest req = new GetOrderRequest(merchantID, "xxxxx", null);
+ * final Payment payment = client.getOrder(req);
+ * try {
+ * Thread.sleep(5000);
+ * } catch (InterruptedException e) {
+ * e.printStackTrace();
+ * }
+ * System.out.println(payment);
+ * } catch (LeonaException e) {
+ * String type = e.getType();
+ * String code = e.getCode();
+ * String message = e.getMessage();
+ * System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
+ * }
  *
- *      try {
- *             final QRCodePayRequest req =
- *                     new QRCodePayRequest(merchantID, "2", "xxx", 1, null, null);
- *             final QRCodePayResponse resp = client.qrCodePay(req);
- *             // do something with resp
- *             ...
- *         } catch (LeonaException e) {
- *             String type = e.getType();
- *             String code = e.getCode();
- *             String message = e.getMessage();
- *             System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
- *         }
- *
- *      try {
- *             final GetOrderRequest req = new GetOrderRequest(merchantID, "xxx", null);
- *             final GetOrderResponse resp = client.getOrder(req);
- *             // do something with resp
- *             ...
- *         } catch (LeonaException e) {
- *             String type = e.getType();
- *             String code = e.getCode();
- *             String message = e.getMessage();
- *             System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
- *         }
- *
- *       client.close();
  * </code>
- * client使用完毕后一定要close()以释放网络资源
  */
-public class LeonaClient implements Leona, Closeable {
+public class LeonaClient implements Leona {
 
-    private final SyncHTTPClient httpClient;
+    private final HttpClient httpClient;
 
     private LeonaClient(Builder builder) {
         this.options = new Options(builder.agentID,
@@ -72,14 +81,10 @@ public class LeonaClient implements Leona, Closeable {
                 builder.encryptionAccept,
                 builder.secretKey);
 
-        httpClient = new SyncHTTPClient(this.options);
+        httpClient = new HttpClient(this.options);
     }
 
     private final Options options;
-
-    public static Builder Builder(String agentID, String agentKey) {
-        return new Builder(agentID, agentKey);
-    }
 
     public static class Builder {
         private final String agentID;
@@ -101,19 +106,19 @@ public class LeonaClient implements Leona, Closeable {
             this.agentKey = agentKey;
         }
 
-        public Builder setPartnerPriKey(String partnerPriKey) {
-            if (CommonUtil.isEmpty(partnerPriKey)) {
-                throw new IllegalArgumentException("partnerPriKey should not be empty");
+        public Builder setPartnerPriKey(String partnerPriKeyFilePath) throws IOException {
+            if (CommonUtil.isEmpty(partnerPriKeyFilePath)) {
+                throw new IllegalArgumentException("partnerPriKeyFilePath should not be empty");
             }
-            this.partnerPriKey = partnerPriKey;
+            this.partnerPriKey = CommonUtil.readPemFile2String(partnerPriKeyFilePath);
             return this;
         }
 
-        public Builder setLhPubKey(String lhPubKey) {
-            if (CommonUtil.isEmpty(lhPubKey)) {
-                throw new IllegalArgumentException("lhPubKey should not be empty");
+        public Builder setLhPubKey(String lhPubKeyFilePath) throws IOException {
+            if (CommonUtil.isEmpty(lhPubKeyFilePath)) {
+                throw new IllegalArgumentException("lhPubKeyFilePath should not be empty");
             }
-            this.lhPubKey = lhPubKey;
+            this.lhPubKey = CommonUtil.readPemFile2String(lhPubKeyFilePath);
             return this;
         }
 
@@ -155,10 +160,22 @@ public class LeonaClient implements Leona, Closeable {
      */
     public QRCodePayResponse qrCodePay(QRCodePayRequest req) throws LeonaException {
         try {
-            return httpClient.doPost(Const.LEHUI_QRCODE_URL, req, QRCodePayResponse.class);
+            return httpClient.request("POST", Const.LEHUI_QRCODE_URL, req, QRCodePayResponse.class);
+        } catch (LeonaRuntimeException e) {
+            throw new LeonaException(e);
+        } catch (IOException e1) {
+            throw new LeonaException(new LeonaRuntimeException(e1));
+        }
+    }
+
+    @Override
+    public void qrCodePay(QRCodePayRequest req, Callback<QRCodePayResponse> callback) throws LeonaException {
+        try {
+            httpClient.request("POST", Const.LEHUI_QRCODE_URL, req, QRCodePayResponse.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
+
     }
 
     /**
@@ -170,7 +187,18 @@ public class LeonaClient implements Leona, Closeable {
      */
     public Payment microPay(MicroPayRequest req) throws LeonaException {
         try {
-            return httpClient.doPost(Const.LEHUI_MICROPAY_URL, req, Payment.class);
+            return httpClient.request("POST", Const.LEHUI_MICROPAY_URL, req, Payment.class);
+        } catch (LeonaRuntimeException e) {
+            throw new LeonaException(e);
+        } catch (IOException e1) {
+            throw new LeonaException(new LeonaRuntimeException(e1));
+        }
+    }
+
+    @Override
+    public void microPay(MicroPayRequest req, Callback<Payment> callback) throws LeonaException {
+        try {
+            httpClient.request("POST", Const.LEHUI_MICROPAY_URL, req, Payment.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -185,7 +213,18 @@ public class LeonaClient implements Leona, Closeable {
      */
     public Payment getOrder(GetOrderRequest req) throws LeonaException {
         try {
-            return httpClient.doPost(Const.LEHUI_GET_ORDER_URL, req, Payment.class);
+            return httpClient.request("POST", Const.LEHUI_GET_ORDER_URL, req, Payment.class);
+        } catch (LeonaRuntimeException e) {
+            throw new LeonaException(e);
+        } catch (IOException e1) {
+            throw new LeonaException(new LeonaRuntimeException(e1));
+        }
+    }
+
+    @Override
+    public void getOrder(GetOrderRequest req, Callback<Payment> callback) throws LeonaException {
+        try {
+            httpClient.request("POST", Const.LEHUI_GET_ORDER_URL, req, Payment.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -201,7 +240,18 @@ public class LeonaClient implements Leona, Closeable {
      */
     public Refund refund(RefundRequest req) throws LeonaException {
         try {
-            return httpClient.doPost(Const.LEHUI_REFUND_URL, req, Refund.class);
+            return httpClient.request("POST", Const.LEHUI_REFUND_URL, req, Refund.class);
+        } catch (LeonaRuntimeException e) {
+            throw new LeonaException(e);
+        } catch (IOException e1) {
+            throw new LeonaException(new LeonaRuntimeException(e1));
+        }
+    }
+
+    @Override
+    public void refund(RefundRequest req, Callback<Refund> callback) throws LeonaException {
+        try {
+            httpClient.request("POST", Const.LEHUI_REFUND_URL, req, Refund.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -216,16 +266,20 @@ public class LeonaClient implements Leona, Closeable {
      */
     public Refund getRefund(GetRefundRequest req) throws LeonaException {
         try {
-            return httpClient.doPost(Const.LEHUI_GET_REFUND_URL, req, Refund.class);
+            return httpClient.request("POST", Const.LEHUI_GET_REFUND_URL, req, Refund.class);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
+        } catch (IOException e1) {
+            throw new LeonaException(new LeonaRuntimeException(e1));
         }
     }
 
     @Override
-    public void close() throws IOException {
-        if (httpClient != null) {
-            httpClient.close();
+    public void getRefund(GetRefundRequest req, Callback<Refund> callback) throws LeonaException {
+        try {
+            httpClient.request("POST", Const.LEHUI_GET_REFUND_URL, req, Refund.class, callback);
+        } catch (LeonaRuntimeException e) {
+            throw new LeonaException(e);
         }
     }
 
