@@ -1,7 +1,6 @@
 package com.lehuipay.leona.exception;
 
 import com.lehuipay.leona.contracts.ErrorCode;
-import com.lehuipay.leona.utils.CommonUtil;
 
 public enum LeonaErrorCodeEnum implements ErrorCode {
 
@@ -11,8 +10,8 @@ public enum LeonaErrorCodeEnum implements ErrorCode {
     UNEXPECTED("client_error", "unexpected", "意料之外的错误"),
 
     // 合作伙伴API
-    HTTP_ERROR("client_error", "http_request", "HTTP请求异常"),
-    HTTP_CANCELLED("client_error", "http_cancelled", "HTTP取消"),
+    HTTP_ERROR("http_error", "http_error", "HTTP异常"),
+    HTTP_CANCELLED("http_error", "http_cancelled", "HTTP取消"),
 
     SIGN_FAIL("client_error", "sign_fail", "签名失败"),
     VERIFY_FAIL("client_error", "verify_fail", "验签失败"),
@@ -50,40 +49,10 @@ public enum LeonaErrorCodeEnum implements ErrorCode {
      * @param code    错误码
      * @param message 描述
      */
-    private LeonaErrorCodeEnum(final String type, final String code, final String message) {
+    LeonaErrorCodeEnum(final String type, final String code, final String message) {
         this.type = type;
         this.code = code;
         this.message = message;
-    }
-
-    /**
-     * 根据编码查询枚举。
-     *
-     * @param code 编码。
-     * @return 枚举。
-     */
-    public static LeonaErrorCodeEnum getByCode(String code) {
-        for (LeonaErrorCodeEnum value : LeonaErrorCodeEnum.values()) {
-            if (CommonUtil.NVLL(code).equals(value.getCode())) {
-                return value;
-            }
-        }
-        return UNEXPECTED;
-    }
-
-    /**
-     * 枚举是否包含此code
-     *
-     * @param code 枚举code
-     * @return 结果
-     */
-    public static Boolean contains(String code) {
-        for (LeonaErrorCodeEnum value : LeonaErrorCodeEnum.values()) {
-            if (CommonUtil.NVLL(code).equals(value.getCode())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

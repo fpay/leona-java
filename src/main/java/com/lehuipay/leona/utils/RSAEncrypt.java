@@ -74,8 +74,7 @@ public class RSAEncrypt {
      * @return
      * @throws LeonaRuntimeException
      */
-    public static byte[] publicEncrypt(RSAPublicKey publicKey, String plainTextData)
-            throws LeonaRuntimeException {
+    public static byte[] publicEncrypt(RSAPublicKey publicKey, String plainTextData) {
         if (publicKey == null) {
             throw new LeonaRuntimeException("加密公钥为空, 请设置");
         }

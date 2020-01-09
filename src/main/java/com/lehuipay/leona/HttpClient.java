@@ -2,12 +2,14 @@ package com.lehuipay.leona;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.lehuipay.leona.exception.LeonaErrorCodeEnum;
 import com.lehuipay.leona.exception.LeonaException;
 import com.lehuipay.leona.exception.LeonaRuntimeException;
 import com.lehuipay.leona.interceptor.L1Interceptor;
 import com.lehuipay.leona.interceptor.L2Interceptor;
 import com.lehuipay.leona.interceptor.SignInterceptor;
 import com.lehuipay.leona.model.ErrorMessage;
+import com.lehuipay.leona.utils.CommonUtil;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -29,7 +31,7 @@ public class HttpClient {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .callTimeout(Duration.ofSeconds(10));
 
-        switch (options.getEncryptionLevel()) {
+        switch (CommonUtil.NVLL(options.getEncryptionLevel())) {
             case Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1:
                 L1Interceptor l1 = new L1Interceptor(
                         new AESEncryptor(), new RSAEnctryptor(options.getPartnerPriKey(), options.getLhPubKey()), options.getEncryptionAccept()
@@ -51,7 +53,7 @@ public class HttpClient {
 
     private final OkHttpClient client;
 
-    public <T, R> T request(final String method, final String url, R data, Class<T> clazz) throws IOException {
+    public <T, R> T request(final String method, final String url, R data, Class<T> clazz) throws IOException, LeonaException {
         final Request request = buildRequest(method, url, data);
         final Response response = client.newCall(request).execute();
         return parseResponse(response, clazz);
@@ -63,7 +65,7 @@ public class HttpClient {
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                callback.callback(new LeonaException(new LeonaRuntimeException(e)), null);
+                callback.callback(new LeonaException(new LeonaRuntimeException(LeonaErrorCodeEnum.HTTP_ERROR, e)), null);
             }
 
             @Override
@@ -71,8 +73,8 @@ public class HttpClient {
                 try {
                     final T result = parseResponse(response, clazz);
                     callback.callback(null, result);
-                } catch (LeonaRuntimeException e) {
-                    callback.callback(new LeonaException(e), null);
+                } catch (LeonaException e) {
+                    callback.callback(e, null);
                 }
             }
         });
@@ -86,18 +88,14 @@ public class HttpClient {
                 .build();
     }
 
-    private <T> T parseResponse(Response response, Class<T> clazz) throws IOException {
+    private <T> T parseResponse(Response response, Class<T> clazz) throws IOException, LeonaException {
+        String bodyStr = response.body() == null ? "" : response.body().string();
+
         if (response.isSuccessful()) {
-            if (response.body() == null) {
-                throw new LeonaRuntimeException("empty response body");
-            }
-            return JSON.parseObject(response.body().string(), clazz);
+            return JSON.parseObject(bodyStr, clazz);
         } else {
-            if (response.body() == null) {
-                throw new LeonaRuntimeException("empty response body");
-            }
-            final ErrorMessage errorMessage = JSON.parseObject(response.body().string(), ErrorMessage.class);
-            throw new LeonaRuntimeException(errorMessage);
+            final ErrorMessage errorMessage = JSON.parseObject(bodyStr, ErrorMessage.class);
+            throw new LeonaException(errorMessage);
         }
     }
 }

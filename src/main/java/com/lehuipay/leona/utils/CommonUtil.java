@@ -2,13 +2,9 @@ package com.lehuipay.leona.utils;
 
 import org.apache.commons.codec.binary.Base64;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
 public class CommonUtil {
@@ -20,10 +16,7 @@ public class CommonUtil {
      * @return
      */
     public static String NVLL(String str1) {
-        if (str1 == null)
-            return "";
-        else
-            return str1;
+        return str1 == null ? "" : str1;
     }
 
     public static Boolean isEmpty(String str1) {
@@ -117,28 +110,5 @@ public class CommonUtil {
 
     public static String base64Encode(byte[] data) {
         return base64.encodeToString(data);
-    }
-
-    public static String inputStream2String(InputStream in) throws IOException {
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int length;
-        while ((length = in.read(buffer)) != -1) {
-            result.write(buffer, 0, length);
-        }
-
-        return result.toString(StandardCharsets.UTF_8.name());
-    }
-
-    public static byte[] inputStream2ByteArray(InputStream input) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        int n = 0;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-        }
-        output.flush();
-        output.close();
-        return output.toByteArray();
     }
 }

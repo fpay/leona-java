@@ -21,7 +21,7 @@ public interface Const {
     int SECRET_KEY_LENGTH   = 16;       // 临时密钥长度
     int IV_LENGTH           = 16;       // 随机向量长度
 
-    String LEHUI_SERVER_HOST    = "https://open.hsh.lehuipay.com";
+    String LEHUI_SERVER_HOST    = "https://open.lehuipay.com";
     String LEHUI_QRCODE_URL     = LEHUI_SERVER_HOST + "/api/v3/payments/qrcode";
     String LEHUI_MICROPAY_URL   = LEHUI_SERVER_HOST + "/api/v3/payments/micropay";
     String LEHUI_JSPAY_URL      = LEHUI_SERVER_HOST + "/api/v3/payments/jspay";

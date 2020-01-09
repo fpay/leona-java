@@ -20,52 +20,49 @@ import java.io.IOException;
  * 多个请求请使用同一个LeonaClient实例, 避免重复初始化
  *
  * <code>
- * Leona client = new LeonaClient
- * .Builder(agent_id, agent_key)
- * .setPartnerPriKey(lhPubKey)
- * .setLhPubKey(partnerPriKey)
+ *         Leona client = new LeonaClient
+ *                 .Builder(agent_id, agent_key)
+ * //                .setPartnerPriKey(cliPriKeyFilePath)
+ * //                .setLhPubKey(serPubKeyFilePath)
  * //                .setSecretKey(secret_key)
- * .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
- * .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
- * .build();
- * <p>
- * // 异步
- * try {
- * final GetOrderRequest req = new GetOrderRequest(merchantID, "xxxxx", null);
- * client.getOrder(req, (e, data) -> {
- * if (e != null) {
- * String type = e.getType();
- * String code = e.getCode();
- * String message = e.getMessage();
- * System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
- * return;
- * }
- * System.out.println(data);
- * });
- * } catch (LeonaException e) {
- * String type = e.getType();
- * String code = e.getCode();
- * String message = e.getMessage();
- * System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
- * }
- * <p>
- * // 同步
- * try {
- * final GetOrderRequest req = new GetOrderRequest(merchantID, "xxxxx", null);
- * final Payment payment = client.getOrder(req);
- * try {
- * Thread.sleep(5000);
- * } catch (InterruptedException e) {
- * e.printStackTrace();
- * }
- * System.out.println(payment);
- * } catch (LeonaException e) {
- * String type = e.getType();
- * String code = e.getCode();
- * String message = e.getMessage();
- * System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
- * }
+ * //                .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
+ * //                .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
+ *                 .build();
  *
+ *         // 异步
+ *         try {
+ *             final QRCodePayRequest req =
+ *                     new QRCodePayRequest(merchantID, "2", "xxxxxxx", 1, null, null);
+ *             client.qrCodePay(req, (e, data) -> {
+ *                 if (e != null) {
+ *                     String type = e.getType();
+ *                     String code = e.getCode();
+ *                     String message = e.getMessage();
+ *                     System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
+ *                     return;
+ *                 }
+ *                 System.out.println(data);
+ *             });
+ *         } catch (LeonaException e) {
+ *             String type = e.getType();
+ *             String code = e.getCode();
+ *             String message = e.getMessage();
+ *             System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
+ * //            e.printStackTrace();
+ *         }
+ *         // 同步
+ *         try {
+ *             final QRCodePayRequest req =
+ *                     new QRCodePayRequest(merchantID, "2", "xxxxxxx", 1, null, null);
+ *             final QRCodePayResponse resp = client.qrCodePay(req);
+ *             System.out.println(resp);
+ *         } catch (LeonaException e) {
+ *             String type = e.getType();
+ *             String code = e.getCode();
+ *             String message = e.getMessage();
+ *             System.err.printf("type: %s, code: %s, message: %s\n", type, code, message);
+ * //            e.printStackTrace();
+ *         }
  * </code>
  */
 public class LeonaClient implements Leona {

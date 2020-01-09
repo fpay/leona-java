@@ -1,19 +1,15 @@
 package com.lehuipay.leona.exception;
 
-import com.lehuipay.leona.model.ErrorMessage;
+import com.lehuipay.leona.contracts.ErrorCode;
 
 public class LeonaException extends Exception {
 
-    public LeonaException(String type, String code, String message) {
-        this.type = type;
-        this.code = code;
-        this.message = message;
-    }
+    private static final long serialVersionUID = -930797565147601915L;
 
-    public LeonaException(ErrorMessage errorMessage) {
-        this.type = errorMessage.getType();
-        this.code = errorMessage.getCode();
-        this.message = errorMessage.getMessage();
+    public LeonaException(ErrorCode errorCode) {
+        this.type = errorCode.getType();
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
     }
 
     public LeonaException(LeonaRuntimeException e) {

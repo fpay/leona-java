@@ -27,6 +27,7 @@
 
 # maven
 target/
+*.iml
 
 # test
 *Test.java
