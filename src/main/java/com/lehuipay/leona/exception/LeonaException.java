@@ -7,30 +7,24 @@ public class LeonaException extends Exception {
     private static final long serialVersionUID = -930797565147601915L;
 
     public LeonaException(ErrorCode errorCode) {
-        this.type = errorCode.getType();
-        this.code = errorCode.getCode();
-        this.message = errorCode.getMessage();
+        this.errorCode = errorCode;
     }
 
     public LeonaException(LeonaRuntimeException e) {
-        this.type = e.getErrorCode().getType();
-        this.code = e.getErrorCode().getCode();
-        this.message = e.getErrorCode().getMessage();
+        this.errorCode = e.getErrorCode();
     }
 
-    private final String type;
-    private final String code;
-    private final String message;
+    private final ErrorCode errorCode;
 
     public String getType() {
-        return type;
+        return this.errorCode.getType();
     }
 
     public String getCode() {
-        return code;
+        return this.errorCode.getCode();
     }
 
     public String getMessage() {
-        return message;
+        return this.errorCode.getMessage();
     }
 }

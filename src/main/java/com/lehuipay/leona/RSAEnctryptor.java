@@ -7,6 +7,9 @@ import com.lehuipay.leona.utils.CommonUtil;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+/**
+ * RSA加密器
+ */
 public class RSAEnctryptor implements AsymmetricEncryptor {
 
     public RSAEnctryptor(String partnerPriKey, String lhPubKey) {
@@ -21,21 +24,50 @@ public class RSAEnctryptor implements AsymmetricEncryptor {
 
     private RSAPublicKey publicKey;
 
+    /**
+     * RSA公钥加密
+     *
+     * @param data 待加密内容
+     * @return 加密后的数据
+     * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA公钥加密异常
+     */
     @Override
     public byte[] pubEncode(String data) {
         return RSAEncrypt.publicEncrypt(publicKey, data);
     }
 
+    /**
+     * RSA私钥解密
+     *
+     * @param data 待解密内容
+     * @return 解密后的数据
+     * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA私钥解密异常
+     */
     @Override
     public byte[] priDecode(byte[] data) {
         return RSAEncrypt.privateDecrypt(privateKey, data);
     }
 
+    /**
+     * RSA签名
+     *
+     * @param data 待签名内容
+     * @return 签名
+     * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA加签异常
+     */
     @Override
     public byte[] sign(byte[] data) {
         return RSAEncrypt.sign(data, privateKey);
     }
 
+    /**
+     * RSA验签
+     *
+     * @param content 待验签内容
+     * @param sign 签名
+     * @return 验签结果
+     * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA验签异常
+     */
     @Override
     public boolean verify(byte[] content, byte[] sign) {
         return RSAEncrypt.verify(content, sign, publicKey);

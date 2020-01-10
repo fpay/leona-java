@@ -32,13 +32,13 @@ public class HttpClient {
                 .callTimeout(Duration.ofSeconds(10));
 
         switch (CommonUtil.NVLL(options.getEncryptionLevel())) {
-            case Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1:
+            case Const.HEADER_ENCRYPTION_LEVEL_L1:
                 L1Interceptor l1 = new L1Interceptor(
                         new AESEncryptor(), new RSAEnctryptor(options.getPartnerPriKey(), options.getLhPubKey()), options.getEncryptionAccept()
                 );
                 builder.addInterceptor(l1);
                 break;
-            case Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L2:
+            case Const.HEADER_ENCRYPTION_LEVEL_L2:
                 L2Interceptor l2 =
                         new L2Interceptor(
                                 new AESEncryptor(), options.getSecretKey(), options.getEncryptionAccept());
@@ -53,12 +53,38 @@ public class HttpClient {
 
     private final OkHttpClient client;
 
+    /**
+     * 同步http请求
+     *
+     * @param method http方法类型
+     * @param url http请求url
+     * @param data httpRequestBody
+     * @param clazz httpResponseBody marshal类型
+     * @param <T> httpRequestBody的泛型类
+     * @param <R> httpResponseBody的泛型类类
+     * @return 指定泛型T的返回值
+     * @throws IOException http异常
+     * @throws LeonaException 若返回的http code > 300, 则将responseBody中的信息封装为LeonaException
+     */
     public <T, R> T request(final String method, final String url, R data, Class<T> clazz) throws IOException, LeonaException {
         final Request request = buildRequest(method, url, data);
         final Response response = client.newCall(request).execute();
         return parseResponse(response, clazz);
     }
 
+    /**
+     * 异步http请求
+     *
+     * @param method http方法类型
+     * @param url http请求url
+     * @param data httpRequestBody
+     * @param clazz httpResponseBody marshal类型
+     * @param callback 异步请求的callback方法,
+     *                 com.lehuipay.leona.Callback接口包含一个方法 void callback(LeonaException e, T data);
+     *                 当返回的http code > 300, server返回信息会被包装为LeonaException
+     * @param <T> httpRequestBody的泛型类
+     * @param <R> httpResponseBody的泛型类类
+     */
     public <T, R> void request(final String method, final String url, R data, Class<T> clazz, Callback<T> callback) {
         final Request request = buildRequest(method, url, data);
 

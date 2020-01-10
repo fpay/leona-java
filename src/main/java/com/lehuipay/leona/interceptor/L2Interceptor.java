@@ -44,19 +44,19 @@ public class L2Interceptor implements Interceptor {
 
         request = request.newBuilder()
                 .post(RequestBody.create(encrypted, mediaTypeJSON))
-                .addHeader(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL, Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L2)
-                .addHeader(Const.HEADER_X_LEHUI_ENCRYPTION_ACCEPT, CommonUtil.NVLL(encryptionAccept))
+                .addHeader(Const.HEADER_ENCRYPTION_LEVEL, Const.HEADER_ENCRYPTION_LEVEL_L2)
+                .addHeader(Const.HEADER_ENCRYPTION_ACCEPT, CommonUtil.NVLL(encryptionAccept))
                 .build();
 
         final Response response = chain.proceed(request);
 
-        if (Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0.equals(encryptionAccept)) {
+        if (Const.HEADER_ENCRYPTION_LEVEL_L0.equals(encryptionAccept)) {
             return response;
         } else {
             /**
              * response解密
              */
-            String content = response.body().string();
+            String content = response.body() == null ? "" : response.body().string();
             final byte[] decryptBody = symmEncryptor.decrypt(content, secretKey.getBytes());
 
             return response.newBuilder()

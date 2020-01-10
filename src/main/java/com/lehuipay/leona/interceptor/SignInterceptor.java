@@ -27,7 +27,7 @@ public class SignInterceptor implements Interceptor {
     private String agentID;
 
     private String generateNonce() {
-        return CommonUtil.randomStr(Const.NONCE_MIN_LENGTH, Const.NONCE_MAX_LENTH);
+        return CommonUtil.randomStr(Const.NONCE_MIN_LENGTH, Const.NONCE_MAX_LENGTH);
     }
 
     @NotNull
@@ -41,18 +41,18 @@ public class SignInterceptor implements Interceptor {
         final String sign = signer.sign(body, nonce);
 
         request = request.newBuilder()
-                .addHeader(Const.HEADER_X_LEHUI_AGENTID, agentID)
-                .addHeader(Const.HEADER_X_LEHUI_NONCE, nonce)
-                .addHeader(Const.HEADER_X_LEHUI_SIGNATURE, sign)
+                .addHeader(Const.HEADER_AGENTID, agentID)
+                .addHeader(Const.HEADER_NONCE, nonce)
+                .addHeader(Const.HEADER_SIGNATURE, sign)
                 .build();
 
         final Response response = chain.proceed(request);
 
         // response验签
-        String content = response.body().string();
+        String content = response.body() == null ? "" : response.body().string();
         final String respBody = CommonUtil.NVLL(content);
-        final String respNonce = CommonUtil.NVLL(response.header(Const.HEADER_X_LEHUI_NONCE));
-        final String respSignature = CommonUtil.NVLL(response.header(Const.HEADER_X_LEHUI_SIGNATURE));
+        final String respNonce = CommonUtil.NVLL(response.header(Const.HEADER_NONCE));
+        final String respSignature = CommonUtil.NVLL(response.header(Const.HEADER_SIGNATURE));
 
         if (!signer.verify(respBody, respNonce, respSignature)) {
             throw new LeonaRuntimeException("invalid response signature");

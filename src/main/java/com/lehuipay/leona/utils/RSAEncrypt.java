@@ -31,8 +31,7 @@ public class RSAEncrypt {
      * @param publicKeyStr 公钥字符串
      * @throws LeonaRuntimeException
      */
-    public static RSAPublicKey getPublicKey(String publicKeyStr)
-            throws LeonaRuntimeException {
+    public static RSAPublicKey getPublicKey(String publicKeyStr) {
         try {
             byte[] buffer = new Base64().decode(publicKeyStr);
             KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
@@ -52,8 +51,7 @@ public class RSAEncrypt {
      * @return
      * @throws LeonaRuntimeException
      */
-    public static RSAPrivateKey getPrivateKey(String privateKeyStr)
-            throws LeonaRuntimeException {
+    public static RSAPrivateKey getPrivateKey(String privateKeyStr) {
         try {
             byte[] buffer = new Base64().decode(privateKeyStr);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
@@ -67,12 +65,12 @@ public class RSAEncrypt {
     }
 
     /**
-     * 公钥加密过程
+     * 公钥加密
      *
      * @param publicKey     公钥
      * @param plainTextData 明文数据
-     * @return
-     * @throws LeonaRuntimeException
+     * @return 公钥解密后的数据
+     * @throws LeonaRuntimeException 加密异常
      */
     public static byte[] publicEncrypt(RSAPublicKey publicKey, String plainTextData) {
         if (publicKey == null) {
@@ -99,7 +97,7 @@ public class RSAEncrypt {
      *
      * @param privateKey    私钥
      * @param plainTextData 明文数据
-     * @return
+     * @return 私钥加密内容
      * @throws LeonaRuntimeException 加密过程中的异常信息
      */
     public static byte[] privateEncrypt(RSAPrivateKey privateKey, String plainTextData)
@@ -183,10 +181,10 @@ public class RSAEncrypt {
     /**
      * rsa签名
      *
-     * @param data
-     * @param privateKey
-     * @return
-     * @throws LeonaRuntimeException
+     * @param data       原始数据
+     * @param privateKey 私钥
+     * @return 数据的签名
+     * @throws LeonaRuntimeException RSA签名异常
      */
     public static byte[] sign(byte[] data, RSAPrivateKey privateKey) throws LeonaRuntimeException {
         try {
@@ -206,11 +204,11 @@ public class RSAEncrypt {
     /**
      * rsa验签
      *
-     * @param content
-     * @param sign
-     * @param publicKey
-     * @return
-     * @throws LeonaRuntimeException
+     * @param content   数据
+     * @param sign      数据签名
+     * @param publicKey 公钥
+     * @return RSA验签结果
+     * @throws LeonaRuntimeException 验签异常
      */
     public static boolean verify(byte[] content, byte[] sign, RSAPublicKey publicKey) throws LeonaRuntimeException {
         //获取Signature实例，指定签名算法(与之前一致)

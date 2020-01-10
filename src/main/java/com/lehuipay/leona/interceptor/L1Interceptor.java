@@ -55,24 +55,24 @@ public class L1Interceptor implements Interceptor {
 
         request = request.newBuilder()
                 .post(RequestBody.create(encrypted, mediaTypeJSON))
-                .addHeader(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL, Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
-                .addHeader(Const.HEADER_X_LEHUI_ENCRYPTION_ACCEPT, CommonUtil.NVLL(encryptionAccept))
-                .addHeader(Const.HEADER_X_LEHUI_ENCRYPTION_KEY, CommonUtil.base64Encode(encryptAESKey))
-                .addHeader(Const.HEADER_X_LEHUI_ENCRYPTION_SIGN, CommonUtil.base64Encode(encryptAESKeySignature))
+                .addHeader(Const.HEADER_ENCRYPTION_LEVEL, Const.HEADER_ENCRYPTION_LEVEL_L1)
+                .addHeader(Const.HEADER_ENCRYPTION_ACCEPT, CommonUtil.NVLL(encryptionAccept))
+                .addHeader(Const.HEADER_ENCRYPTION_KEY, CommonUtil.base64Encode(encryptAESKey))
+                .addHeader(Const.HEADER_ENCRYPTION_SIGN, CommonUtil.base64Encode(encryptAESKeySignature))
                 .build();
 
         final Response response = chain.proceed(request);
 
-        if (Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0.equals(encryptionAccept)) {
+        if (Const.HEADER_ENCRYPTION_LEVEL_L0.equals(encryptionAccept)) {
             return response;
         } else {
             /**
              * 解密response
              */
-            String content = response.body().string();
+            String content = response.body() == null ? "" : response.body().string();
             // AES秘钥验签
-            final byte[] key = CommonUtil.base64Decode(CommonUtil.NVLL(response.header(Const.HEADER_X_LEHUI_ENCRYPTION_KEY)));
-            final byte[] sign = CommonUtil.base64Decode(CommonUtil.NVLL(response.header(Const.HEADER_X_LEHUI_ENCRYPTION_SIGN)));
+            final byte[] key = CommonUtil.base64Decode(CommonUtil.NVLL(response.header(Const.HEADER_ENCRYPTION_KEY)));
+            final byte[] sign = CommonUtil.base64Decode(CommonUtil.NVLL(response.header(Const.HEADER_ENCRYPTION_SIGN)));
             if (!asymEncryptor.verify(key, sign)) {
                 throw new LeonaRuntimeException(LeonaErrorCodeEnum.RSA_ENCRYPTION_VERIFY_FAIL);
             }

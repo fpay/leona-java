@@ -12,8 +12,8 @@ public class CommonUtil {
     /**
      * trim string, include convert null to ""; if str1 is null, will return "";
      *
-     * @param str1
-     * @return
+     * @param str1 入参
+     * @return return str1 == null ? "" : str1
      */
     public static String NVLL(String str1) {
         return str1 == null ? "" : str1;
@@ -26,9 +26,9 @@ public class CommonUtil {
     /**
      * "" 等同于null处理
      *
-     * @param str1
-     * @param str2
-     * @return
+     * @param str1 参数1
+     * @param str2 参数2
+     * @return equals(null, "") == true
      */
     public static Boolean equals(String str1, String str2) {
         return NVLL(str1).equals(NVLL(str2));
@@ -71,7 +71,7 @@ public class CommonUtil {
      *
      * @param min 最小程度
      * @param max 最大长度
-     * @return
+     * @return 随机串
      */
     public static String randomStr(int min, int max) {
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

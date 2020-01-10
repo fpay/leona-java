@@ -8,11 +8,14 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.util.Arrays;
 
@@ -37,7 +40,7 @@ public class AESPKCS7 {
     private Key key;
     private Cipher cipher;
 
-    public void init(byte[] keyBytes) {
+    private void init(byte[] keyBytes) {
 
         // 如果密钥不足16位，那么就补足.  这个if 中的内容很重要
         int base = 16;
@@ -55,7 +58,7 @@ public class AESPKCS7 {
         try {
             // 初始化cipher
             cipher = Cipher.getInstance(algorithmStr, "BC");
-        } catch (Exception e) {
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e) {
             throw new LeonaRuntimeException(e);
         }
     }
@@ -66,7 +69,8 @@ public class AESPKCS7 {
      * @param content  要加密的字符串
      * @param keyBytes 加密密钥
      * @param iv       向量
-     * @return
+     * @return AES加密后的数据
+     * @throws LeonaRuntimeException 加密异常
      */
     public byte[] encrypt(byte[] content, byte[] keyBytes, byte[] iv) {
         byte[] encryptedText = null;
@@ -89,6 +93,7 @@ public class AESPKCS7 {
      * @param keyBytes 加密密钥
      * @param iv       向量
      * @return base64Encode(iv + encryptedBody)
+     * @throws LeonaRuntimeException 加密异常
      */
     public String encryptWithIVBase64(byte[] content, byte[] keyBytes, byte[] iv) {
         final byte[] encrypted;
@@ -109,7 +114,8 @@ public class AESPKCS7 {
      * @param encryptedData 要解密的字符串
      * @param keyBytes      解密密钥
      * @param iv            向量
-     * @return
+     * @return AES解密后的数据
+     * @throws LeonaRuntimeException 解密异常
      */
     public byte[] decrypt(byte[] encryptedData, byte[] keyBytes, byte[] iv) {
         byte[] encryptedText = null;
@@ -131,7 +137,8 @@ public class AESPKCS7 {
      * @param encryptedDataBase64 要解密的字符串, 格式为base64Encode(iv + encryptedBody)
      * @param keyBytes            解密密钥
      * @param ivLength            附加到密文最前方的iv长度
-     * @return
+     * @return AES机密后的数据
+     * @throws LeonaRuntimeException 解密异常
      */
     public byte[] decryptWithIVBase64(String encryptedDataBase64, byte[] keyBytes, int ivLength) {
         byte[] encrypted = new Base64().decode(encryptedDataBase64); //先用base64解密

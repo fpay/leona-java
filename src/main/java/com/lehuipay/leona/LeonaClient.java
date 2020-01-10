@@ -16,8 +16,8 @@ import com.lehuipay.leona.utils.CommonUtil;
 import java.io.IOException;
 
 /**
- * LeonaClient一个线程安全的, 支持异步的, 可复用的客户端工具类
- * 多个请求请使用同一个LeonaClient实例, 避免重复初始化
+ * LeonaClient一个线程安全的, 支持异步的, 可复用的客户端工具类.
+ * 多个请求请使用同一个LeonaClient实例, 避免重复初始化.
  *
  * <code>
  *         Leona client = new LeonaClient
@@ -64,6 +64,21 @@ import java.io.IOException;
  * //            e.printStackTrace();
  *         }
  * </code>
+ *
+ *
+ *
+ * <p>该类所有同步的http请求都会抛出{@link LeonaException}. 具体情况为--加签验签, 加密解密, 网络IO异常, httpRequest返回状态码不为200, 统一抛出{@link LeonaException},
+ * 区别在于{@link LeonaException#getType()}, {@link LeonaException#getCode()}, {@link LeonaException#getMessage()}各自拥有不同的结果.
+ * 异常结果详见枚举类 {@link com.lehuipay.leona.exception.LeonaErrorCodeEnum}.
+ * httpRequest返回状态码不为200返回的{@code LeonaException}是responseBody的封装, 具体内容见
+ * <a href="http://open.hsh.lehuipay.com/docs/">合作伙伴平台API手册</a>
+ *
+ * <p>而该类所有异步的http请求也会抛出{@link LeonaException}. 情况为--加签验签, 加密解密, 网络IO异常.
+ * httpRequest返回状态码不为200的异常情况不在其中, 而在方法的callback参数中进行处理.
+ * @see com.lehuipay.leona.Callback
+ * httpRequest返回状态码不为200情况下返回的{@code LeonaException}是responseBody的封装, 具体内容见
+ * <a href="http://open.hsh.lehuipay.com/docs/">合作伙伴平台API手册</a>
+ *
  */
 public class LeonaClient implements Leona {
 
@@ -103,6 +118,13 @@ public class LeonaClient implements Leona {
             this.agentKey = agentKey;
         }
 
+        /**
+         * 加载私钥
+         *
+         * @param partnerPriKeyFilePath 私钥文件路径
+         * @return LeonaClient构造器
+         * @throws IOException 读取文件产生的IO异常
+         */
         public Builder setPartnerPriKey(String partnerPriKeyFilePath) throws IOException {
             if (CommonUtil.isEmpty(partnerPriKeyFilePath)) {
                 throw new IllegalArgumentException("partnerPriKeyFilePath should not be empty");
@@ -111,6 +133,13 @@ public class LeonaClient implements Leona {
             return this;
         }
 
+        /**
+         * 加载公钥
+         *
+         * @param lhPubKeyFilePath 公钥文件路径
+         * @return LeonaClient构造器
+         * @throws IOException 读取文件产生的IO异常
+         */
         public Builder setLhPubKey(String lhPubKeyFilePath) throws IOException {
             if (CommonUtil.isEmpty(lhPubKeyFilePath)) {
                 throw new IllegalArgumentException("lhPubKeyFilePath should not be empty");
@@ -151,13 +180,14 @@ public class LeonaClient implements Leona {
     /**
      * 二维码支付
      *
-     * @param req
-     * @return
-     * @throws LeonaRuntimeException
+     * @param req 请求体
+     * @return 二维码支付结果
+     * @throws LeonaException 说明见类文档
+     *
      */
     public QRCodePayResponse qrCodePay(QRCodePayRequest req) throws LeonaException {
         try {
-            return httpClient.request("POST", Const.LEHUI_QRCODE_URL, req, QRCodePayResponse.class);
+            return httpClient.request("POST", Const.QRCODE_URL, req, QRCodePayResponse.class);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         } catch (IOException e1) {
@@ -165,10 +195,17 @@ public class LeonaClient implements Leona {
         }
     }
 
+    /**
+     * 二维码支付(异步)
+     *
+     * @param req 请求体
+     * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
+     * @throws LeonaException 说明见类文档
+     */
     @Override
     public void qrCodePay(QRCodePayRequest req, Callback<QRCodePayResponse> callback) throws LeonaException {
         try {
-            httpClient.request("POST", Const.LEHUI_QRCODE_URL, req, QRCodePayResponse.class, callback);
+            httpClient.request("POST", Const.QRCODE_URL, req, QRCodePayResponse.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -178,13 +215,13 @@ public class LeonaClient implements Leona {
     /**
      * 刷卡交易
      *
-     * @param req
-     * @return
-     * @throws Exception
+     * @param req 请求体
+     * @return 刷卡交易结果
+     * @throws LeonaException 说明见类文档
      */
     public Payment microPay(MicroPayRequest req) throws LeonaException {
         try {
-            return httpClient.request("POST", Const.LEHUI_MICROPAY_URL, req, Payment.class);
+            return httpClient.request("POST", Const.MICROPAY_URL, req, Payment.class);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         } catch (IOException e1) {
@@ -192,10 +229,17 @@ public class LeonaClient implements Leona {
         }
     }
 
+    /**
+     * 刷卡交易(异步)
+     *
+     * @param req 请求体
+     * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
+     * @throws LeonaException 说明见类文档
+     */
     @Override
     public void microPay(MicroPayRequest req, Callback<Payment> callback) throws LeonaException {
         try {
-            httpClient.request("POST", Const.LEHUI_MICROPAY_URL, req, Payment.class, callback);
+            httpClient.request("POST", Const.MICROPAY_URL, req, Payment.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -204,13 +248,13 @@ public class LeonaClient implements Leona {
     /**
      * 查询交易
      *
-     * @param req
-     * @return
-     * @throws Exception
+     * @param req 请求体
+     * @return 查询交易结果
+     * @throws LeonaException 说明见类文档
      */
     public Payment getOrder(GetOrderRequest req) throws LeonaException {
         try {
-            return httpClient.request("POST", Const.LEHUI_GET_ORDER_URL, req, Payment.class);
+            return httpClient.request("POST", Const.GET_ORDER_URL, req, Payment.class);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         } catch (IOException e1) {
@@ -218,10 +262,17 @@ public class LeonaClient implements Leona {
         }
     }
 
+    /**
+     * 查询交易(异步)
+     *
+     * @param req 请求体
+     * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
+     * @throws LeonaException 说明见类文档
+     */
     @Override
     public void getOrder(GetOrderRequest req, Callback<Payment> callback) throws LeonaException {
         try {
-            httpClient.request("POST", Const.LEHUI_GET_ORDER_URL, req, Payment.class, callback);
+            httpClient.request("POST", Const.GET_ORDER_URL, req, Payment.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -231,13 +282,13 @@ public class LeonaClient implements Leona {
     /**
      * 退款
      *
-     * @param req
-     * @return
-     * @throws Exception
+     * @param req 请求体
+     * @return 退款结果
+     * @throws LeonaException 说明见类文档
      */
     public Refund refund(RefundRequest req) throws LeonaException {
         try {
-            return httpClient.request("POST", Const.LEHUI_REFUND_URL, req, Refund.class);
+            return httpClient.request("POST", Const.REFUND_URL, req, Refund.class);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         } catch (IOException e1) {
@@ -245,10 +296,17 @@ public class LeonaClient implements Leona {
         }
     }
 
+    /**
+     * 退款(异步)
+     *
+     * @param req 请求体
+     * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
+     * @throws LeonaException 说明见类文档
+     */
     @Override
     public void refund(RefundRequest req, Callback<Refund> callback) throws LeonaException {
         try {
-            httpClient.request("POST", Const.LEHUI_REFUND_URL, req, Refund.class, callback);
+            httpClient.request("POST", Const.REFUND_URL, req, Refund.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -257,13 +315,13 @@ public class LeonaClient implements Leona {
     /**
      * 查询退款
      *
-     * @param req
-     * @return
-     * @throws Exception
+     * @param req 请求体
+     * @return 查询退款结果
+     * @throws LeonaException 说明见类文档
      */
     public Refund getRefund(GetRefundRequest req) throws LeonaException {
         try {
-            return httpClient.request("POST", Const.LEHUI_GET_REFUND_URL, req, Refund.class);
+            return httpClient.request("POST", Const.GET_REFUND_URL, req, Refund.class);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         } catch (IOException e1) {
@@ -271,10 +329,17 @@ public class LeonaClient implements Leona {
         }
     }
 
+    /**
+     * 查询退款(异步)
+     *
+     * @param req 请求体
+     * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
+     * @throws LeonaException 说明见类文档
+     */
     @Override
     public void getRefund(GetRefundRequest req, Callback<Refund> callback) throws LeonaException {
         try {
-            httpClient.request("POST", Const.LEHUI_GET_REFUND_URL, req, Refund.class, callback);
+            httpClient.request("POST", Const.GET_REFUND_URL, req, Refund.class, callback);
         } catch (LeonaRuntimeException e) {
             throw new LeonaException(e);
         }
@@ -282,6 +347,11 @@ public class LeonaClient implements Leona {
 
     // ******************setter & getter********************
 
+    /**
+     * 获得LeonaClient的初始化参数
+     *
+     * @return LeonaClient属性参数
+     */
     public Options getOptions() {
         return options;
     }

@@ -1,2 +1,2 @@
-###leona-java
-合作伙伴API java sdk
+### leona-java
+Lehuipay Open API SDK for Java

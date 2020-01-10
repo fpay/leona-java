@@ -11,6 +11,14 @@ public class HMAC {
 
     private static final String HMAC_ALGORITHM = "HmacSHA256";
 
+    /**
+     * HMAC-SHA256签名算法
+     *
+     * @param key     签名秘钥
+     * @param content 内容
+     * @return 签名
+     * @throws LeonaRuntimeException 签名错误
+     */
     public static byte[] hmacSHA256(byte[] key, byte[] content) throws LeonaRuntimeException {
         try {
             Mac hmacSha256 = Mac.getInstance(HMAC_ALGORITHM);
@@ -24,6 +32,12 @@ public class HMAC {
         }
     }
 
+    /**
+     * HEX编码数据
+     *
+     * @param src 待编码的数据
+     * @return HEX编码后的数据
+     */
     public static String encode(byte[] src) {
         String strHex = "";
         StringBuilder sb = new StringBuilder("");
