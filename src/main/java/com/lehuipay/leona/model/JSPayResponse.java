@@ -8,7 +8,7 @@ public class JSPayResponse {
     private String transactionID;
 
     @JSONField(name = "order_no")
-    private Integer orderNo;
+    private String orderNo;
 
     @JSONField(name = "merchant_id")
     private String merchantID;
@@ -27,11 +27,11 @@ public class JSPayResponse {
         this.transactionID = transactionID;
     }
 
-    public Integer getOrderNo() {
+    public String getOrderNo() {
         return orderNo;
     }
 
-    public void setOrderNo(Integer orderNo) {
+    public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
     }
 
@@ -63,7 +63,7 @@ public class JSPayResponse {
     public String toString() {
         return "JSPayResponse{" +
                 "transactionID='" + transactionID + '\'' +
-                ", orderNo=" + orderNo +
+                ", orderNo='" + orderNo + '\'' +
                 ", merchantID='" + merchantID + '\'' +
                 ", prepayID='" + prepayID + '\'' +
                 ", jsData='" + jsData + '\'' +
