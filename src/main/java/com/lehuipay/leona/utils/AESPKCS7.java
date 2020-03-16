@@ -1,7 +1,5 @@
 package com.lehuipay.leona.utils;
 
-import com.lehuipay.leona.exception.LeonaErrorCodeEnum;
-import com.lehuipay.leona.exception.LeonaRuntimeException;
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -59,7 +57,7 @@ public class AESPKCS7 {
             // 初始化cipher
             cipher = Cipher.getInstance(algorithmStr, "BC");
         } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e) {
-            throw new LeonaRuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -70,18 +68,17 @@ public class AESPKCS7 {
      * @param keyBytes 加密密钥
      * @param iv       向量
      * @return AES加密后的数据
-     * @throws LeonaRuntimeException 加密异常
+     * @throws InvalidKeyException
      */
-    public byte[] encrypt(byte[] content, byte[] keyBytes, byte[] iv) {
+    public byte[] encrypt(byte[] content, byte[] keyBytes, byte[] iv) throws InvalidKeyException {
         byte[] encryptedText = null;
         init(keyBytes);
         try {
             cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
             encryptedText = cipher.doFinal(content);
         } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("AES秘钥非法", e);
+            // 该异常理应永远不会抛出
+            throw new RuntimeException(e);
         }
         return encryptedText;
     }
@@ -93,15 +90,10 @@ public class AESPKCS7 {
      * @param keyBytes 加密密钥
      * @param iv       向量
      * @return base64Encode(iv + encryptedBody)
-     * @throws LeonaRuntimeException 加密异常
+     * @throws InvalidKeyException
      */
-    public String encryptWithIVBase64(byte[] content, byte[] keyBytes, byte[] iv) {
-        final byte[] encrypted;
-        try {
-            encrypted = encrypt(content, keyBytes, iv);
-        } catch (LeonaRuntimeException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.ENCRYPTION_FAIL, e);
-        }
+    public String encryptWithIVBase64(byte[] content, byte[] keyBytes, byte[] iv) throws InvalidKeyException {
+        final byte[] encrypted = encrypt(content, keyBytes, iv);
         byte[] tmp = new byte[iv.length + encrypted.length];
         System.arraycopy(iv, 0, tmp, 0, iv.length);
         System.arraycopy(encrypted, 0, tmp, iv.length, encrypted.length);
@@ -115,18 +107,17 @@ public class AESPKCS7 {
      * @param keyBytes      解密密钥
      * @param iv            向量
      * @return AES解密后的数据
-     * @throws LeonaRuntimeException 解密异常
+     * @throws InvalidKeyException
      */
-    public byte[] decrypt(byte[] encryptedData, byte[] keyBytes, byte[] iv) {
+    public byte[] decrypt(byte[] encryptedData, byte[] keyBytes, byte[] iv) throws InvalidKeyException {
         byte[] encryptedText = null;
         init(keyBytes);
         try {
             cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
             encryptedText = cipher.doFinal(encryptedData);
         } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("AES秘钥非法", e);
+            // 该异常理应永远不会抛出
+            throw new RuntimeException(e);
         }
         return encryptedText;
     }
@@ -138,18 +129,13 @@ public class AESPKCS7 {
      * @param keyBytes            解密密钥
      * @param ivLength            附加到密文最前方的iv长度
      * @return AES机密后的数据
-     * @throws LeonaRuntimeException 解密异常
+     * @throws InvalidKeyException
      */
-    public byte[] decryptWithIVBase64(String encryptedDataBase64, byte[] keyBytes, int ivLength) {
+    public byte[] decryptWithIVBase64(String encryptedDataBase64, byte[] keyBytes, int ivLength) throws InvalidKeyException {
         byte[] encrypted = new Base64().decode(encryptedDataBase64); //先用base64解密
 
         final byte[] iv = CommonUtil.subBytes(encrypted, 0, ivLength);
         final byte[] encryptedData = CommonUtil.subBytes(encrypted, ivLength, encrypted.length - ivLength);
-
-        try {
-            return decrypt(encryptedData, keyBytes, iv);
-        } catch (LeonaRuntimeException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.DECRYPTION_FAIL, e);
-        }
+        return decrypt(encryptedData, keyBytes, iv);
     }
 }

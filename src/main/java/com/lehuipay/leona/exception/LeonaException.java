@@ -10,7 +10,13 @@ public class LeonaException extends Exception {
         this.errorCode = errorCode;
     }
 
+    public LeonaException(final ErrorCode errorCode, final Throwable t) {
+        super(errorCode.getMessage(), t);
+        this.errorCode = errorCode;
+    }
+
     public LeonaException(LeonaRuntimeException e) {
+        super(e.getCause());
         this.errorCode = e.getErrorCode();
     }
 
@@ -26,5 +32,14 @@ public class LeonaException extends Exception {
 
     public String getMessage() {
         return this.errorCode.getMessage();
+    }
+
+    @Override
+    public String toString() {
+        return "LeonaException{" +
+                "type=" + getType() +
+                ", code=" +getCode() +
+                ", message=" + getMessage() +
+                '}';
     }
 }

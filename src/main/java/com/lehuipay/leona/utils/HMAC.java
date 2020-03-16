@@ -1,7 +1,5 @@
 package com.lehuipay.leona.utils;
 
-import com.lehuipay.leona.exception.LeonaRuntimeException;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
@@ -17,19 +15,19 @@ public class HMAC {
      * @param key     签名秘钥
      * @param content 内容
      * @return 签名
-     * @throws LeonaRuntimeException 签名错误
+     * @throws InvalidKeyException HMAC秘钥格式非法
      */
-    public static byte[] hmacSHA256(byte[] key, byte[] content) throws LeonaRuntimeException {
+    public static byte[] hmacSHA256(byte[] key, byte[] content) throws InvalidKeyException {
+        Mac hmacSha256 = null;
         try {
-            Mac hmacSha256 = Mac.getInstance(HMAC_ALGORITHM);
-            hmacSha256.init(new SecretKeySpec(key, 0, key.length, HMAC_ALGORITHM));
-            byte[] hmacSha256Bytes = hmacSha256.doFinal(content);
-            return hmacSha256Bytes;
+            hmacSha256 = Mac.getInstance(HMAC_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("HMAC秘钥格式非法");
+            // 该异常理应永远不会抛出
+            throw new RuntimeException(e);
         }
+        hmacSha256.init(new SecretKeySpec(key, 0, key.length, HMAC_ALGORITHM));
+        byte[] hmacSha256Bytes = hmacSha256.doFinal(content);
+        return hmacSha256Bytes;
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.lehuipay.leona.utils;
 
-import com.lehuipay.leona.exception.LeonaErrorCodeEnum;
-import com.lehuipay.leona.exception.LeonaRuntimeException;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;
@@ -29,7 +27,7 @@ public class RSAEncrypt {
      * 从字符串中加载公钥
      *
      * @param publicKeyStr 公钥字符串
-     * @throws LeonaRuntimeException
+     * @throws IllegalArgumentException 公钥格式非法
      */
     public static RSAPublicKey getPublicKey(String publicKeyStr) {
         try {
@@ -38,9 +36,9 @@ public class RSAEncrypt {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
             return (RSAPublicKey) keyFactory.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            throw new LeonaRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (InvalidKeySpecException | NullPointerException e) {
-            throw new LeonaRuntimeException("公钥非法", e);
+            throw new IllegalArgumentException("公钥非法", e);
         }
     }
 
@@ -49,7 +47,7 @@ public class RSAEncrypt {
      *
      * @param privateKeyStr 私钥数据字符串
      * @return
-     * @throws LeonaRuntimeException
+     * @throws IllegalArgumentException 私钥格式非法
      */
     public static RSAPrivateKey getPrivateKey(String privateKeyStr) {
         try {
@@ -58,23 +56,26 @@ public class RSAEncrypt {
             KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
         } catch (NoSuchAlgorithmException e) {
-            throw new LeonaRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (InvalidKeySpecException | NullPointerException e) {
-            throw new LeonaRuntimeException("私钥非法", e);
+            throw new IllegalArgumentException("私钥非法", e);
         }
     }
 
-    /**
+     /**
      * 公钥加密
      *
      * @param publicKey     公钥
      * @param plainTextData 明文数据
-     * @return 公钥解密后的数据
-     * @throws LeonaRuntimeException 加密异常
+     * @return
+     * @throws InvalidKeyException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
      */
-    public static byte[] publicEncrypt(RSAPublicKey publicKey, String plainTextData) {
+    public static byte[] publicEncrypt(RSAPublicKey publicKey, String plainTextData)
+            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         if (publicKey == null) {
-            throw new LeonaRuntimeException("加密公钥为空, 请设置");
+            throw new IllegalArgumentException("加密公钥为空, 请设置");
         }
         Cipher cipher = null;
         try {
@@ -84,11 +85,8 @@ public class RSAEncrypt {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             return cipher.doFinal(plainTextData.getBytes());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("加密公钥非法,请检查", e);
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.RSA_PUBLIC_ENCRYPTION_FAIL, e);
+            // 该异常理应永远不会抛出
+            throw new RuntimeException(e);
         }
     }
 
@@ -98,12 +96,14 @@ public class RSAEncrypt {
      * @param privateKey    私钥
      * @param plainTextData 明文数据
      * @return 私钥加密内容
-     * @throws LeonaRuntimeException 加密过程中的异常信息
+     * @throws InvalidKeyException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
      */
     public static byte[] privateEncrypt(RSAPrivateKey privateKey, String plainTextData)
-            throws LeonaRuntimeException {
+            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         if (privateKey == null) {
-            throw new LeonaRuntimeException("加密私钥为空, 请设置");
+            throw new IllegalArgumentException("加密私钥为空, 请设置");
         }
         Cipher cipher = null;
         try {
@@ -112,11 +112,7 @@ public class RSAEncrypt {
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
             return cipher.doFinal(plainTextData.getBytes());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("加密私钥非法,请检查", e);
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.RSA_PRIVATE_ENCRYPTION_FAIL, e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -126,12 +122,14 @@ public class RSAEncrypt {
      * @param privateKey 私钥
      * @param cipherData 密文数据
      * @return 明文
-     * @throws LeonaRuntimeException 解密过程中的异常信息
+     * @throws InvalidKeyException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
      */
     public static byte[] privateDecrypt(RSAPrivateKey privateKey, byte[] cipherData)
-            throws LeonaRuntimeException {
+            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         if (privateKey == null) {
-            throw new LeonaRuntimeException("解密私钥为空, 请设置");
+            throw new IllegalArgumentException("解密私钥为空, 请设置");
         }
         Cipher cipher = null;
         try {
@@ -141,11 +139,8 @@ public class RSAEncrypt {
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             return cipher.doFinal(cipherData);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("解密私钥非法,请检查", e);
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.RSA_PRIVATE_DECRYPTION_FAIL, e);
+            // 该异常理应永远不会抛出
+            throw new RuntimeException(e);
         }
     }
 
@@ -155,12 +150,14 @@ public class RSAEncrypt {
      * @param publicKey  公钥
      * @param cipherData 密文数据
      * @return 明文
-     * @throws LeonaRuntimeException 解密过程中的异常信息
+     * @throws InvalidKeyException
+     * @throws IllegalBlockSizeException
+     * @throws BadPaddingException
      */
     public static byte[] publicDecrypt(RSAPublicKey publicKey, byte[] cipherData)
-            throws LeonaRuntimeException {
+            throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         if (publicKey == null) {
-            throw new LeonaRuntimeException("解密公钥为空, 请设置");
+            throw new IllegalArgumentException("解密公钥为空, 请设置");
         }
         Cipher cipher = null;
         try {
@@ -170,11 +167,8 @@ public class RSAEncrypt {
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
             return cipher.doFinal(cipherData);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new LeonaRuntimeException("无此解密算法", e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("解密公钥非法,请检查", e);
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.RSA_PUBLIC_DECRYPTION_FAIL, e);
+            // 该异常理应永远不会抛出
+            throw new RuntimeException(e);
         }
     }
 
@@ -184,20 +178,18 @@ public class RSAEncrypt {
      * @param data       原始数据
      * @param privateKey 私钥
      * @return 数据的签名
-     * @throws LeonaRuntimeException RSA签名异常
+     * @throws InvalidKeyException
+     * @throws SignatureException
      */
-    public static byte[] sign(byte[] data, RSAPrivateKey privateKey) throws LeonaRuntimeException {
+    public static byte[] sign(byte[] data, RSAPrivateKey privateKey) throws InvalidKeyException, SignatureException {
         try {
             Signature signature = Signature.getInstance(RSA_HAS256_SIGNATURE);
             signature.initSign(privateKey);
             signature.update(data);
             return signature.sign();
         } catch (NoSuchAlgorithmException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("RSA加签私钥非法, 请检查", e);
-        } catch (SignatureException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.RSA_ENCRYPTION_SIGN_FAIL, e);
+            // never
+            throw new RuntimeException(e);
         }
     }
 
@@ -208,9 +200,10 @@ public class RSAEncrypt {
      * @param sign      数据签名
      * @param publicKey 公钥
      * @return RSA验签结果
-     * @throws LeonaRuntimeException 验签异常
+     * @throws InvalidKeyException
+     * @throws SignatureException
      */
-    public static boolean verify(byte[] content, byte[] sign, RSAPublicKey publicKey) throws LeonaRuntimeException {
+    public static boolean verify(byte[] content, byte[] sign, RSAPublicKey publicKey) throws InvalidKeyException, SignatureException {
         //获取Signature实例，指定签名算法(与之前一致)
         Signature signature = null;
         try {
@@ -222,11 +215,8 @@ public class RSAEncrypt {
             //公钥验签（true-验签通过；false-验签失败）
             return signature.verify(sign);
         } catch (NoSuchAlgorithmException e) {
-            throw new LeonaRuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new LeonaRuntimeException("RSA验签公钥非法, 请检查", e);
-        } catch (SignatureException e) {
-            throw new LeonaRuntimeException(LeonaErrorCodeEnum.RSA_ENCRYPTION_VERIFY_FAIL, e);
+            // never
+            throw new RuntimeException(e);
         }
     }
 }

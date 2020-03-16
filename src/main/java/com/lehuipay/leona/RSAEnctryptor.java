@@ -4,6 +4,10 @@ import com.lehuipay.leona.contracts.AsymmetricEncryptor;
 import com.lehuipay.leona.utils.RSAEncrypt;
 import com.lehuipay.leona.utils.CommonUtil;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import java.security.InvalidKeyException;
+import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
@@ -32,7 +36,7 @@ public class RSAEnctryptor implements AsymmetricEncryptor {
      * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA公钥加密异常
      */
     @Override
-    public byte[] pubEncode(String data) {
+    public byte[] pubEncode(String data) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         return RSAEncrypt.publicEncrypt(publicKey, data);
     }
 
@@ -44,7 +48,7 @@ public class RSAEnctryptor implements AsymmetricEncryptor {
      * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA私钥解密异常
      */
     @Override
-    public byte[] priDecode(byte[] data) {
+    public byte[] priDecode(byte[] data) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         return RSAEncrypt.privateDecrypt(privateKey, data);
     }
 
@@ -56,7 +60,7 @@ public class RSAEnctryptor implements AsymmetricEncryptor {
      * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA加签异常
      */
     @Override
-    public byte[] sign(byte[] data) {
+    public byte[] sign(byte[] data) throws SignatureException, InvalidKeyException {
         return RSAEncrypt.sign(data, privateKey);
     }
 
@@ -69,7 +73,7 @@ public class RSAEnctryptor implements AsymmetricEncryptor {
      * @throws com.lehuipay.leona.exception.LeonaRuntimeException RSA验签异常
      */
     @Override
-    public boolean verify(byte[] content, byte[] sign) {
+    public boolean verify(byte[] content, byte[] sign) throws SignatureException, InvalidKeyException {
         return RSAEncrypt.verify(content, sign, publicKey);
     }
 

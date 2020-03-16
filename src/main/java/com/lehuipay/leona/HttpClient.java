@@ -18,7 +18,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.Duration;
 
 public class HttpClient {
@@ -31,21 +34,20 @@ public class HttpClient {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .callTimeout(Duration.ofSeconds(10));
 
+        // 加密拦截器
         switch (CommonUtil.NVLL(options.getEncryptionLevel())) {
             case Const.HEADER_ENCRYPTION_LEVEL_L1:
-                L1Interceptor l1 = new L1Interceptor(
-                        new AESEncryptor(), new RSAEnctryptor(options.getPartnerPriKey(), options.getLhPubKey()), options.getEncryptionAccept()
-                );
+                L1Interceptor l1 = new L1Interceptor(new AESEncryptor(),
+                        new RSAEnctryptor(options.getPartnerPriKey(), options.getLhPubKey()), options.getEncryptionAccept());
                 builder.addInterceptor(l1);
                 break;
             case Const.HEADER_ENCRYPTION_LEVEL_L2:
-                L2Interceptor l2 =
-                        new L2Interceptor(
-                                new AESEncryptor(), options.getSecretKey(), options.getEncryptionAccept());
+                L2Interceptor l2 = new L2Interceptor(new AESEncryptor(), options.getSecretKey(), options.getEncryptionAccept());
                 builder.addInterceptor(l2);
                 break;
         }
 
+        // 签名拦截器
         client = builder
                 .addInterceptor(signInterceptor)
                 .build();
@@ -57,48 +59,53 @@ public class HttpClient {
      * 同步http请求
      *
      * @param method http方法类型
-     * @param url http请求url
-     * @param data httpRequestBody
-     * @param clazz httpResponseBody marshal类型
-     * @param <T> httpRequestBody的泛型类
-     * @param <R> httpResponseBody的泛型类类
+     * @param url    http请求url
+     * @param data   httpRequestBody
+     * @param clazz  httpResponseBody marshal类型
+     * @param <T>    httpResponseBody的泛型类
+     * @param <R>    httpRequestBody的泛型类类
      * @return 指定泛型T的返回值
-     * @throws IOException http异常
+     * @throws IOException    http异常
      * @throws LeonaException 若返回的http code > 300, 则将responseBody中的信息封装为LeonaException
      */
-    public <T, R> T request(final String method, final String url, R data, Class<T> clazz) throws IOException, LeonaException {
+    public <T, R> T request(final String method, final String url, R data, Class<T> clazz) throws LeonaException {
         final Request request = buildRequest(method, url, data);
-        final Response response = client.newCall(request).execute();
-        return parseResponse(response, clazz);
+        try {
+            final Response response = client.newCall(request).execute();
+            return parseResponse(response, clazz);
+        } catch (LeonaRuntimeException e) {
+            throw new LeonaException(e);
+        } catch (IOException e) {
+            throw new LeonaException(LeonaErrorCodeEnum.HTTP_ERROR, e);
+        }
     }
 
     /**
      * 异步http请求
      *
-     * @param method http方法类型
-     * @param url http请求url
-     * @param data httpRequestBody
-     * @param clazz httpResponseBody marshal类型
+     * @param method   http方法类型
+     * @param url      http请求url
+     * @param data     httpRequestBody
+     * @param clazz    httpResponseBody marshal类型
      * @param callback 异步请求的callback方法,
      *                 com.lehuipay.leona.Callback接口包含一个方法 void callback(LeonaException e, T data);
      *                 当返回的http code > 300, server返回信息会被包装为LeonaException
-     * @param <T> httpRequestBody的泛型类
-     * @param <R> httpResponseBody的泛型类类
+     * @param <T>      httpRequestBody的泛型类
+     * @param <R>      httpResponseBody的泛型类类
      */
-    public <T, R> void request(final String method, final String url, R data, Class<T> clazz, Callback<T> callback) {
+    public <T, R> void request(final String method, final String url, R data, Class<T> clazz, Callback<T> callback) throws LeonaException {
         final Request request = buildRequest(method, url, data);
 
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                callback.callback(new LeonaException(new LeonaRuntimeException(LeonaErrorCodeEnum.HTTP_ERROR, e)), null);
+                callback.callback(new LeonaException(LeonaErrorCodeEnum.HTTP_ERROR, e), null);
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
-                    final T result = parseResponse(response, clazz);
-                    callback.callback(null, result);
+                    callback.callback(null, parseResponse(response, clazz));
                 } catch (LeonaException e) {
                     callback.callback(e, null);
                 }
@@ -122,6 +129,61 @@ public class HttpClient {
         } else {
             final ErrorMessage errorMessage = JSON.parseObject(bodyStr, ErrorMessage.class);
             throw new LeonaException(errorMessage);
+        }
+    }
+
+    public <R> void download(final String method, final String url, R data, OutputStream dst) throws LeonaException {
+        final Request request = buildRequest(method, url, data);
+        try {
+            final Response response = client.newCall(request).execute();
+            parseResponse2Stream(response, dst);
+        } catch (LeonaRuntimeException e) {
+            throw new LeonaException(e);
+        } catch (IOException e) {
+            throw new LeonaException(LeonaErrorCodeEnum.HTTP_ERROR, e);
+        }
+    }
+
+    public <R> void download(final String method, final String url, R data, Callback<OutputStream> callback) {
+        final Request request = buildRequest(method, url, data);
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                callback.callback(new LeonaException(LeonaErrorCodeEnum.HTTP_ERROR, e), null);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    parseResponse2Stream(response, outputStream);
+                    callback.callback(null, outputStream);
+                } catch (LeonaException e) {
+                    callback.callback(e, null);
+                }
+            }
+        });
+    }
+
+    private void parseResponse2Stream(Response response, OutputStream dst) throws IOException, LeonaException {
+        if (!response.isSuccessful()) {
+            final ErrorMessage errorMessage = JSON.parseObject(response.body().string(), ErrorMessage.class);
+            throw new LeonaException(errorMessage);
+        }
+
+        InputStream is = null;
+        byte[] buf = new byte[2048];
+        int len = 0;
+        try {
+            is = response.body().byteStream();
+            while ((len = is.read(buf)) != -1) {
+                dst.write(buf, 0, len);
+            }
+            dst.flush();
+        } finally {
+            if (is != null) {
+                is.close();
+            }
         }
     }
 }

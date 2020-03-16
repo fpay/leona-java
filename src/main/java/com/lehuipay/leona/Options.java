@@ -15,6 +15,10 @@ public class Options {
             throw new IllegalArgumentException("secretKey should not be empty when encryptionLevel == 'L2'");
         }
 
+        if (CommonUtil.isEmpty(encryptionAccept) && !CommonUtil.isEmpty(encryptionLevel)) {
+            encryptionAccept = encryptionLevel;
+        }
+
         this.agentID = agentID;
         this.agentKey = agentKey;
         this.partnerPriKey = partnerPriKey;
