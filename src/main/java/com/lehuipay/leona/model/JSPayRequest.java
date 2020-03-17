@@ -17,7 +17,7 @@ public class JSPayRequest {
     };
 
     public JSPayRequest(String merchantID, String terminalID, String orderNo, Integer amount, String clientType,
-                        String appID, String buyerID, String clientIP, String notifyURL) {
+                        String appID, String buyerID, String clientIP, String notifyURL, String[] tags) {
         if (CommonUtil.isEmpty(merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, merchantID should not be empty");
         }
@@ -52,6 +52,7 @@ public class JSPayRequest {
         this.buyerID = buyerID;
         this.clientIP = clientIP;
         this.notifyURL = notifyURL;
+        this.tags = tags;
     }
 
     @JSONField(name = "merchant_id")
@@ -80,6 +81,9 @@ public class JSPayRequest {
 
     @JSONField(name = "notify_url")
     private String notifyURL;
+
+    @JSONField(name = "tags")
+    private String[] tags;
 
     public String getMerchantID() {
         return merchantID;
@@ -115,5 +119,9 @@ public class JSPayRequest {
 
     public String getNotifyURL() {
         return notifyURL;
+    }
+
+    public String[] getTags() {
+        return tags;
     }
 }

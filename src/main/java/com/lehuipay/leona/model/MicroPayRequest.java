@@ -6,7 +6,7 @@ import com.lehuipay.leona.utils.CommonUtil;
 public class MicroPayRequest {
 
     public MicroPayRequest(String merchantID, String terminalID, String orderNo, Integer amount, String authCode,
-                           String notifyURL) {
+                           String notifyURL, String[] tags) {
         if (CommonUtil.isEmpty(merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.MicroPayRequest, merchantID should not be empty");
         }
@@ -29,6 +29,7 @@ public class MicroPayRequest {
         this.amount = amount;
         this.authCode = authCode;
         this.notifyURL = notifyURL;
+        this.tags = tags;
     }
 
     @JSONField(name = "merchant_id")
@@ -48,6 +49,9 @@ public class MicroPayRequest {
 
     @JSONField(name = "notify_url")
     private String notifyURL;
+
+    @JSONField(name = "tags")
+    private String[] tags;
 
     public String getMerchantID() {
         return merchantID;
@@ -71,5 +75,9 @@ public class MicroPayRequest {
 
     public String getNotifyURL() {
         return notifyURL;
+    }
+
+    public String[] getTags() {
+        return tags;
     }
 }

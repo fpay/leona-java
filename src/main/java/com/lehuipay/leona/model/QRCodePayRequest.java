@@ -6,7 +6,7 @@ import com.lehuipay.leona.utils.CommonUtil;
 public class QRCodePayRequest {
 
     public QRCodePayRequest(String merchantID, String terminalID, String orderNo, Integer amount,
-                            String notifyURL, String callbackURL) {
+                            String notifyURL, String callbackURL, String[] tags) {
         if (CommonUtil.isEmpty(merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.QRCodePayRequest, merchantID should not be empty");
         }
@@ -22,6 +22,7 @@ public class QRCodePayRequest {
         this.amount = amount;
         this.notifyURL = notifyURL;
         this.callbackURL = callbackURL;
+        this.tags = tags;
     }
 
     @JSONField(name = "merchant_id")
@@ -41,6 +42,9 @@ public class QRCodePayRequest {
 
     @JSONField(name = "callback_url")
     private String callbackURL;
+
+    @JSONField(name = "tags")
+    private String[] tags;
 
     public String getMerchantID() {
         return merchantID;
@@ -64,5 +68,9 @@ public class QRCodePayRequest {
 
     public String getCallbackURL() {
         return callbackURL;
+    }
+
+    public String[] getTags() {
+        return tags;
     }
 }
