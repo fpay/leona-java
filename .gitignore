@@ -30,7 +30,10 @@ target/
 *.iml
 
 # test
-*Test.java
+# *Test.java
 
 # SSL
 *.pem
+
+# my
+MyTest.java
