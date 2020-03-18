@@ -8,26 +8,32 @@ LEhuipay OpeN Api SDK for Java
 <dependency>
     <groupId>com.github.roujiamo-cold</groupId>
     <artifactId>leona-java</artifactId>
-    <version>0.1.1</version>
+    <version>1.1.1</version>
 </dependency>
 ``` 
 
 ## 初始化
 ```java
-Leona client = new LeonaClient
-        .Builder(agent_id, agent_key)
-//        .setPartnerPriKey(cliPriKeyFilePath)
-//        .setLhPubKey(serPubKeyFilePath)
-//        .setSecretKey(secret_key)
-//        .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
-//        .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
-        .build();
+Client client = LeonaClient.builder()
+      .setAgentID(agent_id)
+      .setAgentKey(agent_key)
+//      .setPartnerPriKey(cliPriKeyFilePath)
+//      .setLhPubKey(serPubKeyFilePath)
+//      .setSecretKey(secret_key)
+//      .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
+//      .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
+       .build();
 
 // 异步
 try {
-    final QRCodePayRequest req =
-            new QRCodePayRequest(merchantID, "2", "xxxxxxx", 1, null, null);
-    client.qrCodePay(req, (e, data) -> {
+    final QRCodePayRequest request = QRCodePayRequest.builder()
+            .setMerchantID(merchantID)
+            .setTerminalID("2")
+            .setOrderNo("20200313000000000001")
+            .setAmount(1)
+            .setTags(new String[]{"tag1", "tag2"})
+            .build();
+    client.qrCodePay(request, (e, data) -> {
         if (e != null) {
             System.err.println(e);
             return;
@@ -46,10 +52,15 @@ try {
 
 // 同步
 try {
-    final QRCodePayRequest req =
-            new QRCodePayRequest(merchantID, "2", "xxxxxxx", 1, null, null);
-    final QRCodePayResponse resp = client.qrCodePay(req);
-    System.out.println(resp);
+    final QRCodePayRequest request = QRCodePayRequest.builder()
+            .setMerchantID(merchantID)
+            .setTerminalID("2")
+            .setOrderNo("20200313000000000001")
+            .setAmount(1)
+            .setTags(new String[]{"tag1", "tag2"})
+            .build();
+    final QRCodePayResponse response = client.qrCodePay(request);
+    System.out.println(response);
 } catch (LeonaException e) {
     System.err.println(e);
 }

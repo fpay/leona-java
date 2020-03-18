@@ -33,4 +33,24 @@ public interface Const {
     String GET_BALANCE_URL          = SERVER_HOST + "/api/v3/wallets/query";
     String WITHDRAW_URL             = SERVER_HOST + "/api/v3/wallets/withdraw";
     String GET_WITHDRAW_DETAIL_URL  = SERVER_HOST + "/api/v3/wallets/query_withdrawal";
+
+    String CLIENT_TYPE_WEIXIN   = "weixin";
+    String CLIENT_TYPE_ALIPAY   = "alipay";
+    String CLIENT_TYPE_UNIONPAY = "unionpay";
+    String CLIENT_TYPE_JDPAY    = "jdpay";
+
+    String PAYMENT_STATUS_PROCESSING = "processing";
+    String PAYMENT_STATUS_SUCCEEDED  = "succeeded";
+    String PAYMENT_STATUS_FAILED     = "failed";
+    String PAYMENT_STATUS_CLOSED     = "closed";
+
+    String REFUND_STATUS_CREATED    = "created";
+    String REFUND_STATUS_PROCESSING = "processing";
+    String REFUND_STATUS_SUCCEEDED  = "succeeded";
+    String REFUND_STATUS_FAILED     = "failed";
+
+    String WITHDRAWAL_STATUS_ACCEPTED   = "accepted";
+    String WITHDRAWAL_STATUS_PROCESSING = "processing";
+    String WITHDRAWAL_STATUS_SUCCEEDED  = "succeeded";
+    String WITHDRAWAL_STATUS_FAILED     = "failed";
 }

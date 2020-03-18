@@ -16,43 +16,42 @@ public class JSPayRequest {
         }
     };
 
-    public JSPayRequest(String merchantID, String terminalID, String orderNo, Integer amount, String clientType,
-                        String appID, String buyerID, String clientIP, String notifyURL, String[] tags) {
-        if (CommonUtil.isEmpty(merchantID)) {
+    public JSPayRequest(Builder builder) {
+        if (CommonUtil.isEmpty(builder.merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, merchantID should not be empty");
         }
-        if (CommonUtil.isEmpty(orderNo)) {
+        if (CommonUtil.isEmpty(builder.orderNo)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, orderNo should not be empty");
         }
-        if (amount <= 0) {
+        if (builder.amount <= 0) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, amount should be greater than zero");
         }
-        if (CommonUtil.isEmpty(clientType)) {
+        if (CommonUtil.isEmpty(builder.clientType)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, clientType should not be empty");
         }
-        if (!clientTypeSet.contains(clientType)) {
+        if (!clientTypeSet.contains(builder.clientType)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, clientType should be one of [weixin, alipay, unionpay, jdpay]");
         }
-        if (CommonUtil.isEmpty(appID)) {
+        if (CommonUtil.isEmpty(builder.appID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, appID should not be empty");
         }
-        if (CommonUtil.isEmpty(buyerID)) {
+        if (CommonUtil.isEmpty(builder.buyerID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, buyerID should not be empty");
         }
-        if (CommonUtil.isEmpty(clientIP)) {
+        if (CommonUtil.isEmpty(builder.clientIP)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, clientIP should not be empty");
         }
 
-        this.merchantID = merchantID;
-        this.terminalID = terminalID;
-        this.orderNo = orderNo;
-        this.amount = amount;
-        this.clientType = clientType;
-        this.appID = appID;
-        this.buyerID = buyerID;
-        this.clientIP = clientIP;
-        this.notifyURL = notifyURL;
-        this.tags = tags;
+        this.merchantID = builder.merchantID;
+        this.terminalID = builder.terminalID;
+        this.orderNo = builder.orderNo;
+        this.amount = builder.amount;
+        this.clientType = builder.clientType;
+        this.appID = builder.appID;
+        this.buyerID = builder.buyerID;
+        this.clientIP = builder.clientIP;
+        this.notifyURL = builder.notifyURL;
+        this.tags = builder.tags;
     }
 
     @JSONField(name = "merchant_id")
@@ -123,5 +122,78 @@ public class JSPayRequest {
 
     public String[] getTags() {
         return tags;
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String merchantID;
+        private String terminalID;
+        private String orderNo;
+        private Integer amount;
+        private String clientType;
+        private String appID;
+        private String buyerID;
+        private String clientIP;
+        private String notifyURL;
+        private String[] tags;
+
+        public Builder() {}
+
+        public JSPayRequest build(){
+            return new JSPayRequest(this);
+        }
+
+        public Builder setMerchantID(String merchantID) {
+            this.merchantID = merchantID;
+            return this;
+        }
+
+        public Builder setTerminalID(String terminalID) {
+            this.terminalID = terminalID;
+            return this;
+        }
+
+        public Builder setOrderNo(String orderNo) {
+            this.orderNo = orderNo;
+            return this;
+        }
+
+        public Builder setAmount(Integer amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder setClientType(String clientType) {
+            this.clientType = clientType;
+            return this;
+        }
+
+        public Builder setAppID(String appID) {
+            this.appID = appID;
+            return this;
+        }
+
+        public Builder setBuyerID(String buyerID) {
+            this.buyerID = buyerID;
+            return this;
+        }
+
+        public Builder setClientIP(String clientIP) {
+            this.clientIP = clientIP;
+            return this;
+        }
+
+        public Builder setNotifyURL(String notifyURL) {
+            this.notifyURL = notifyURL;
+            return this;
+        }
+
+        public Builder setTags(String[] tags) {
+            this.tags = tags;
+            return this;
+        }
     }
 }

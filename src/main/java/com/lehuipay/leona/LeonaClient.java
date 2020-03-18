@@ -1,6 +1,6 @@
 package com.lehuipay.leona;
 
-import com.lehuipay.leona.contracts.Leona;
+import com.lehuipay.leona.contracts.Client;
 import com.lehuipay.leona.exception.LeonaException;
 import com.lehuipay.leona.model.GetBalanceRequest;
 import com.lehuipay.leona.model.Balance;
@@ -28,8 +28,9 @@ import java.io.OutputStream;
  * 多个请求请使用同一个LeonaClient实例, 避免重复初始化.
  *
  * <code>
- *         Leona client = new LeonaClient
- *                 .Builder(agent_id, agent_key)
+ *         Client client = LeonaClient.builder()
+ *                 .setAgentID(agent_id)
+ *                 .setAgentKey(agent_key)
  * //                .setPartnerPriKey(cliPriKeyFilePath)
  * //                .setLhPubKey(serPubKeyFilePath)
  * //                .setSecretKey(secret_key)
@@ -39,9 +40,14 @@ import java.io.OutputStream;
  *
  *         // 异步
  *         try {
- *             final QRCodePayRequest req =
- *                     new QRCodePayRequest(merchantID, "2", "xxxxxxx", 1, null, null);
- *             client.qrCodePay(req, (e, data) -> {
+ *             final QRCodePayRequest request = QRCodePayRequest.builder()
+ *                     .setMerchantID(merchantID)
+ *                     .setTerminalID("2")
+ *                     .setOrderNo("20200313000000000001")
+ *                     .setAmount(1)
+ *                     .setTags(new String[]{"tag1", "tag2"})
+ *                     .build();
+ *             client.qrCodePay(request, (e, data) -> {
  *                 if (e != null) {
  *                     System.err.println(e);
  *                     return;
@@ -55,10 +61,15 @@ import java.io.OutputStream;
  *
  *         // 同步
  *         try {
- *             final QRCodePayRequest req =
- *                     new QRCodePayRequest(merchantID, "2", "xxxxxxx", 1, null, null);
- *             final QRCodePayResponse resp = client.qrCodePay(req);
- *             System.out.println(resp);
+ *             final QRCodePayRequest request = QRCodePayRequest.builder()
+ *  *                     .setMerchantID(merchantID)
+ *  *                     .setTerminalID("2")
+ *  *                     .setOrderNo("20200313000000000001")
+ *  *                     .setAmount(1)
+ *  *                     .setTags(new String[]{"tag1", "tag2"})
+ *  *                     .build();
+ *             final QRCodePayResponse response = client.qrCodePay(request);
+ *             System.out.println(response);
  *         } catch (LeonaException e) {
  *             System.err.printf(e);
  * //            e.printStackTrace();
@@ -80,7 +91,7 @@ import java.io.OutputStream;
  * <a href="http://open.hsh.lehuipay.com/docs/">合作伙伴平台API手册</a>
  *
  */
-public class LeonaClient implements Leona {
+public class LeonaClient implements Client {
 
     private final HttpClient httpClient;
 
@@ -98,24 +109,35 @@ public class LeonaClient implements Leona {
 
     private final Options options;
 
+    public static Builder builder(){
+        return new Builder();
+    }
+
     public static class Builder {
-        private final String agentID;
-        private final String agentKey;
+        private String agentID;
+        private String agentKey;
         private String partnerPriKey;
         private String lhPubKey;
         private String encryptionLevel;
         private String encryptionAccept;
         private String secretKey;
 
-        public Builder(String agentID, String agentKey) {
+        public Builder() {}
+
+        public Builder setAgentID(String agentID) {
             if (CommonUtil.isEmpty(agentID)) {
                 throw new IllegalArgumentException("agentID should not be empty");
             }
+            this.agentID = agentID;
+            return this;
+        }
+
+        public Builder setAgentKey(String agentKey) {
             if (CommonUtil.isEmpty(agentKey)) {
                 throw new IllegalArgumentException("agentKey should not be empty");
             }
-            this.agentID = agentID;
             this.agentKey = agentKey;
+            return this;
         }
 
         /**

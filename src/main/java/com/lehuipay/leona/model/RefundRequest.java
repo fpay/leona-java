@@ -5,24 +5,24 @@ import com.lehuipay.leona.utils.CommonUtil;
 
 public class RefundRequest {
 
-    public RefundRequest(String merchantID, String orderNo, String transactionID, String refundNo, Integer amount) {
-        if (CommonUtil.isEmpty(merchantID)) {
+    public RefundRequest(Builder builder) {
+        if (CommonUtil.isEmpty(builder.merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.RefundRequest, merchantID should not be empty");
         }
-        if (CommonUtil.isEmpty(orderNo) && CommonUtil.isEmpty(transactionID)) {
+        if (CommonUtil.isEmpty(builder.orderNo) && CommonUtil.isEmpty(builder.transactionID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.RefundRequest, at least one of orderNo, transactionID");
         }
-        if (CommonUtil.isEmpty(refundNo)) {
+        if (CommonUtil.isEmpty(builder.refundNo)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.RefundRequest, refundNo should not be empty");
         }
-        if (amount <= 0) {
+        if (builder.amount <= 0) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.RefundRequest, amount should be greater than zero");
         }
-        this.merchantID = merchantID;
-        this.orderNo = orderNo;
-        this.transactionID = transactionID;
-        this.refundNo = refundNo;
-        this.amount = amount;
+        this.merchantID = builder.merchantID;
+        this.orderNo = builder.orderNo;
+        this.transactionID = builder.transactionID;
+        this.refundNo = builder.refundNo;
+        this.amount = builder.amount;
     }
 
     @JSONField(name = "merchant_id")
@@ -58,5 +58,48 @@ public class RefundRequest {
 
     public Integer getAmount() {
         return amount;
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String merchantID;
+        private String orderNo;
+        private String transactionID;
+        private String refundNo;
+        private Integer amount;
+
+        public Builder() {}
+
+        public RefundRequest build(){
+            return new RefundRequest(this);
+        }
+
+        public Builder setMerchantID(String merchantID) {
+            this.merchantID = merchantID;
+            return this;
+        }
+
+        public Builder setOrderNo(String orderNo) {
+            this.orderNo = orderNo;
+            return this;
+        }
+
+        public Builder setTransactionID(String transactionID) {
+            this.transactionID = transactionID;
+            return this;
+        }
+
+        public Builder setRefundNo(String refundNo) {
+            this.refundNo = refundNo;
+            return this;
+        }
+
+        public Builder setAmount(Integer amount) {
+            this.amount = amount;
+            return this;
+        }
     }
 }

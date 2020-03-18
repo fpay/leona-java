@@ -24,7 +24,7 @@ import java.io.OutputStream;
 /**
  * 支付业务接口
  */
-public interface Leona {
+public interface Client {
 
     // 二维码支付
     QRCodePayResponse createQRCodePay(QRCodePayRequest req) throws LeonaException;

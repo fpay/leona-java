@@ -5,31 +5,31 @@ import com.lehuipay.leona.utils.CommonUtil;
 
 public class MicroPayRequest {
 
-    public MicroPayRequest(String merchantID, String terminalID, String orderNo, Integer amount, String authCode,
-                           String notifyURL, String[] tags) {
-        if (CommonUtil.isEmpty(merchantID)) {
+    public MicroPayRequest(Builder builder) {
+        if (CommonUtil.isEmpty(builder.merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.MicroPayRequest, merchantID should not be empty");
         }
-        if (CommonUtil.isEmpty(terminalID)) {
+        if (CommonUtil.isEmpty(builder.terminalID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.MicroPayRequest, terminalID should not be empty");
         }
-        if (CommonUtil.isEmpty(orderNo)) {
+        if (CommonUtil.isEmpty(builder.orderNo)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.MicroPayRequest, orderNo should not be empty");
         }
-        if (amount <= 0) {
+        if (builder.amount <= 0) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.MicroPayRequest, amount should be greater than zero");
         }
-        if (CommonUtil.isEmpty(authCode)) {
+        if (CommonUtil.isEmpty(builder.authCode)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.MicroPayRequest, authCode should not be empty");
         }
 
-        this.merchantID = merchantID;
-        this.terminalID = terminalID;
-        this.orderNo = orderNo;
-        this.amount = amount;
-        this.authCode = authCode;
-        this.notifyURL = notifyURL;
-        this.tags = tags;
+        this.merchantID = builder.merchantID;
+        this.terminalID = builder.terminalID;
+        this.orderNo = builder.orderNo;
+        this.amount = builder.amount;
+        this.authCode = builder.authCode;
+        this.notifyURL = builder.notifyURL;
+        this.clientIP = builder.clientIP;
+        this.tags = builder.tags;
     }
 
     @JSONField(name = "merchant_id")
@@ -49,6 +49,9 @@ public class MicroPayRequest {
 
     @JSONField(name = "notify_url")
     private String notifyURL;
+
+    @JSONField(name = "client_ip")
+    private String clientIP;
 
     @JSONField(name = "tags")
     private String[] tags;
@@ -77,7 +80,72 @@ public class MicroPayRequest {
         return notifyURL;
     }
 
+    public String getClientIP() {
+        return clientIP;
+    }
+
     public String[] getTags() {
         return tags;
+    }
+
+    public static Builder builder(){
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String merchantID;
+        private String terminalID;
+        private String orderNo;
+        private Integer amount;
+        private String authCode;
+        private String notifyURL;
+        private String clientIP;
+        private String[] tags;
+
+        public Builder() {}
+
+        public MicroPayRequest build(){
+            return new MicroPayRequest(this);
+        }
+
+        public Builder setMerchantID(String merchantID) {
+            this.merchantID = merchantID;
+            return this;
+        }
+
+        public Builder setTerminalID(String terminalID) {
+            this.terminalID = terminalID;
+            return this;
+        }
+
+        public Builder setOrderNo(String orderNo) {
+            this.orderNo = orderNo;
+            return this;
+        }
+
+        public Builder setAmount(Integer amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        public Builder setAuthCode(String authCode) {
+            this.authCode = authCode;
+            return this;
+        }
+
+        public Builder setNotifyURL(String notifyURL) {
+            this.notifyURL = notifyURL;
+            return this;
+        }
+
+        public Builder setClientIP(String clientIP) {
+            this.clientIP = clientIP;
+            return this;
+        }
+
+        public Builder setTags(String[] tags) {
+            this.tags = tags;
+            return this;
+        }
     }
 }

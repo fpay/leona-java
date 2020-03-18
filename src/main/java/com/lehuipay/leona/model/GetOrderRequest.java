@@ -5,16 +5,16 @@ import com.lehuipay.leona.utils.CommonUtil;
 
 public class GetOrderRequest {
 
-    public GetOrderRequest(String merchantID, String orderNo, String transactionID) {
-        if (CommonUtil.isEmpty(merchantID)) {
+    public GetOrderRequest(Builder builder) {
+        if (CommonUtil.isEmpty(builder.merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.GetOrderRequest, merchantID should not be empty");
         }
-        if (CommonUtil.isEmpty(orderNo) && CommonUtil.isEmpty(transactionID)) {
+        if (CommonUtil.isEmpty(builder.orderNo) && CommonUtil.isEmpty(builder.transactionID)) {
             throw new NumberFormatException("init com.lehuipay.leona.model.GetOrderRequest, at least one of orderNo and transactionID");
         }
-        this.merchantID = merchantID;
-        this.orderNo = orderNo;
-        this.transactionID = transactionID;
+        this.merchantID = builder.merchantID;
+        this.orderNo = builder.orderNo;
+        this.transactionID = builder.transactionID;
     }
 
     @JSONField(name = "merchant_id")
@@ -38,4 +38,33 @@ public class GetOrderRequest {
         return transactionID;
     }
 
+    public static Builder builder(){
+        return new Builder();
+    }
+    public static class Builder {
+        private String merchantID;
+        private String orderNo;
+        private String transactionID;
+
+        public Builder() {}
+
+        public GetOrderRequest build(){
+            return new GetOrderRequest(this);
+        }
+
+        public Builder setMerchantID(String merchantID) {
+            this.merchantID = merchantID;
+            return this;
+        }
+
+        public Builder setOrderNo(String orderNo) {
+            this.orderNo = orderNo;
+            return this;
+        }
+
+        public Builder setTransactionID(String transactionID) {
+            this.transactionID = transactionID;
+            return this;
+        }
+    }
 }
