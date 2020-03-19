@@ -22,17 +22,17 @@ public interface Const {
     int IV_LENGTH           = 16;       // 随机向量长度
 
     String SERVER_HOST              = "https://open.lehuipay.com";
-    String QRCODE_PAY_URL           = SERVER_HOST + "/api/v3/payments/qrcode";
-    String MICROPAY_URL             = SERVER_HOST + "/api/v3/payments/micropay";
-    String JS_PAY_URL               = SERVER_HOST + "/api/v3/payments/jspay";
-    String GET_ORDER_URL            = SERVER_HOST + "/api/v3/payments/query";
+    String QRCODE_PAYMENT_URL       = SERVER_HOST + "/api/v3/payments/qrcode";
+    String MICROPAY_PAYMENT_URL     = SERVER_HOST + "/api/v3/payments/micropay";
+    String JSPAY_PAYMENT_URL        = SERVER_HOST + "/api/v3/payments/jspay";
+    String QUERY_PAYMENT_URL        = SERVER_HOST + "/api/v3/payments/query";
     String REFUND_URL               = SERVER_HOST + "/api/v3/refunds";
-    String GET_REFUND_URL           = SERVER_HOST + "/api/v3/refunds/query";
+    String QUERY_REFUND_URL         = SERVER_HOST + "/api/v3/refunds/query";
 
-    String GET_BILL_URL             = SERVER_HOST + "/api/v3/bills/download";
-    String GET_BALANCE_URL          = SERVER_HOST + "/api/v3/wallets/query";
+    String DOWNLOAD_BILLS_URL       = SERVER_HOST + "/api/v3/bills/download";
+    String QUERY_BALANCE_URL        = SERVER_HOST + "/api/v3/wallets/query";
     String WITHDRAW_URL             = SERVER_HOST + "/api/v3/wallets/withdraw";
-    String GET_WITHDRAW_DETAIL_URL  = SERVER_HOST + "/api/v3/wallets/query_withdrawal";
+    String QUERY_WITHDRAWAL_URL     = SERVER_HOST + "/api/v3/wallets/query_withdrawal";
 
     String CLIENT_TYPE_WEIXIN   = "weixin";
     String CLIENT_TYPE_ALIPAY   = "alipay";

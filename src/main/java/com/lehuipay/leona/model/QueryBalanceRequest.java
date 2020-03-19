@@ -3,11 +3,11 @@ package com.lehuipay.leona.model;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
 
-public class GetBalanceRequest {
+public class QueryBalanceRequest {
 
-    public GetBalanceRequest(Builder builder) {
+    public QueryBalanceRequest(Builder builder) {
         if (CommonUtil.isEmpty(builder.merchantID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetBalanceRequest, merchantID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.QueryBalanceRequest, merchantID should not be empty");
         }
         this.merchantID = builder.merchantID;
     }
@@ -28,8 +28,8 @@ public class GetBalanceRequest {
 
         public Builder() {}
 
-        public GetBalanceRequest build(){
-            return new GetBalanceRequest(this);
+        public QueryBalanceRequest build(){
+            return new QueryBalanceRequest(this);
         }
 
         public Builder setMerchantID(String merchantID) {

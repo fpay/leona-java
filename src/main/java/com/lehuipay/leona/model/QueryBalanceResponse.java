@@ -2,7 +2,7 @@ package com.lehuipay.leona.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class Balance {
+public class QueryBalanceResponse {
 
     @JSONField(name = "merchant_id")
     private String merchantID;

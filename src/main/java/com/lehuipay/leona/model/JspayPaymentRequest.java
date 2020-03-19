@@ -5,7 +5,7 @@ import com.lehuipay.leona.utils.CommonUtil;
 
 import java.util.HashSet;
 
-public class JSPayRequest {
+public class JspayPaymentRequest {
 
     private HashSet clientTypeSet =  new HashSet() {
         {
@@ -16,30 +16,30 @@ public class JSPayRequest {
         }
     };
 
-    public JSPayRequest(Builder builder) {
+    public JspayPaymentRequest(Builder builder) {
         if (CommonUtil.isEmpty(builder.merchantID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, merchantID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, merchantID should not be empty");
         }
         if (CommonUtil.isEmpty(builder.orderNo)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, orderNo should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, orderNo should not be empty");
         }
         if (builder.amount <= 0) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, amount should be greater than zero");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, amount should be greater than zero");
         }
         if (CommonUtil.isEmpty(builder.clientType)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, clientType should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, clientType should not be empty");
         }
         if (!clientTypeSet.contains(builder.clientType)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, clientType should be one of [weixin, alipay, unionpay, jdpay]");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, clientType should be one of [weixin, alipay, unionpay, jdpay]");
         }
         if (CommonUtil.isEmpty(builder.appID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, appID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, appID should not be empty");
         }
         if (CommonUtil.isEmpty(builder.buyerID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, buyerID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, buyerID should not be empty");
         }
         if (CommonUtil.isEmpty(builder.clientIP)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.JSPayRequest, clientIP should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.JspayPaymentRequest, clientIP should not be empty");
         }
 
         this.merchantID = builder.merchantID;
@@ -142,8 +142,8 @@ public class JSPayRequest {
 
         public Builder() {}
 
-        public JSPayRequest build(){
-            return new JSPayRequest(this);
+        public JspayPaymentRequest build(){
+            return new JspayPaymentRequest(this);
         }
 
         public Builder setMerchantID(String merchantID) {

@@ -2,22 +2,25 @@ package com.lehuipay.leona;
 
 import com.lehuipay.leona.contracts.Client;
 import com.lehuipay.leona.exception.LeonaException;
-import com.lehuipay.leona.model.GetBalanceRequest;
-import com.lehuipay.leona.model.Balance;
-import com.lehuipay.leona.model.GetBillRequest;
-import com.lehuipay.leona.model.GetOrderRequest;
-import com.lehuipay.leona.model.GetRefundRequest;
-import com.lehuipay.leona.model.GetWithdrawalDetailRequest;
-import com.lehuipay.leona.model.JSPayRequest;
-import com.lehuipay.leona.model.JSPayResponse;
-import com.lehuipay.leona.model.MicroPayRequest;
-import com.lehuipay.leona.model.Payment;
-import com.lehuipay.leona.model.QRCodePayRequest;
-import com.lehuipay.leona.model.QRCodePayResponse;
-import com.lehuipay.leona.model.Refund;
+import com.lehuipay.leona.model.MicropayPaymentResponse;
+import com.lehuipay.leona.model.QueryBalanceRequest;
+import com.lehuipay.leona.model.QueryBalanceResponse;
+import com.lehuipay.leona.model.DownloadBillsRequest;
+import com.lehuipay.leona.model.QueryPaymentRequest;
+import com.lehuipay.leona.model.QueryPaymentResponse;
+import com.lehuipay.leona.model.QueryRefundRequest;
+import com.lehuipay.leona.model.QueryRefundResponse;
+import com.lehuipay.leona.model.QueryWithdrawalRequest;
+import com.lehuipay.leona.model.JspayPaymentRequest;
+import com.lehuipay.leona.model.JspayPaymentResponse;
+import com.lehuipay.leona.model.MicropayPaymentRequest;
+import com.lehuipay.leona.model.QRCodePaymentRequest;
+import com.lehuipay.leona.model.QRCodePaymentResponse;
 import com.lehuipay.leona.model.RefundRequest;
+import com.lehuipay.leona.model.RefundResponse;
 import com.lehuipay.leona.model.WithdrawRequest;
-import com.lehuipay.leona.model.Withdrawal;
+import com.lehuipay.leona.model.QueryWithdrawalResponse;
+import com.lehuipay.leona.model.WithdrawResponse;
 import com.lehuipay.leona.utils.CommonUtil;
 
 import java.io.IOException;
@@ -40,14 +43,14 @@ import java.io.OutputStream;
  *
  *         // 异步
  *         try {
- *             final QRCodePayRequest request = QRCodePayRequest.builder()
+ *             final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
  *                     .setMerchantID(merchantID)
  *                     .setTerminalID("2")
  *                     .setOrderNo("20200313000000000001")
  *                     .setAmount(1)
  *                     .setTags(new String[]{"tag1", "tag2"})
  *                     .build();
- *             client.qrCodePay(request, (e, data) -> {
+ *             client.createQRCodePayment(request, (e, data) -> {
  *                 if (e != null) {
  *                     System.err.println(e);
  *                     return;
@@ -56,7 +59,6 @@ import java.io.OutputStream;
  *             });
  *         } catch (LeonaException e) {
  *             System.err.println(e);
- * //            e.printStackTrace();
  *         }
  *
  *         // 同步
@@ -68,11 +70,10 @@ import java.io.OutputStream;
  *  *                     .setAmount(1)
  *  *                     .setTags(new String[]{"tag1", "tag2"})
  *  *                     .build();
- *             final QRCodePayResponse response = client.qrCodePay(request);
+ *             final QRCodePaymentResponse response = client.createQRCodePayment(request);
  *             System.out.println(response);
  *         } catch (LeonaException e) {
  *             System.err.printf(e);
- * //            e.printStackTrace();
  *         }
  * </code>
  *
@@ -207,8 +208,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      *
      */
-    public QRCodePayResponse createQRCodePay(QRCodePayRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.QRCODE_PAY_URL, req, QRCodePayResponse.class);
+    public QRCodePaymentResponse createQRCodePayment(QRCodePaymentRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.QRCODE_PAYMENT_URL, req, QRCodePaymentResponse.class);
     }
 
     /**
@@ -219,8 +220,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createQRCodePay(QRCodePayRequest req, Callback<QRCodePayResponse> callback) throws LeonaException {
-        httpClient.request("POST", Const.QRCODE_PAY_URL, req, QRCodePayResponse.class, callback);
+    public void createQRCodePayment(QRCodePaymentRequest req, Callback<QRCodePaymentResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.QRCODE_PAYMENT_URL, req, QRCodePaymentResponse.class, callback);
 
     }
 
@@ -231,8 +232,8 @@ public class LeonaClient implements Client {
      * @return 刷卡交易结果
      * @throws LeonaException 说明见类文档
      */
-    public Payment createMicroPay(MicroPayRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.MICROPAY_URL, req, Payment.class);
+    public MicropayPaymentResponse createMicropayPayment(MicropayPaymentRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.MICROPAY_PAYMENT_URL, req, MicropayPaymentResponse.class);
     }
 
     /**
@@ -243,8 +244,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createMicroPay(MicroPayRequest req, Callback<Payment> callback) throws LeonaException {
-        httpClient.request("POST", Const.MICROPAY_URL, req, Payment.class, callback);
+    public void createMicropayPayment(MicropayPaymentRequest req, Callback<MicropayPaymentResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.MICROPAY_PAYMENT_URL, req, MicropayPaymentResponse.class, callback);
     }
 
     /**
@@ -254,8 +255,8 @@ public class LeonaClient implements Client {
      * @return 查询交易结果
      * @throws LeonaException 说明见类文档
      */
-    public Payment getOrder(GetOrderRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.GET_ORDER_URL, req, Payment.class);
+    public QueryPaymentResponse queryPayment(QueryPaymentRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.QUERY_PAYMENT_URL, req, QueryPaymentResponse.class);
     }
 
     /**
@@ -266,8 +267,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void getOrder(GetOrderRequest req, Callback<Payment> callback) throws LeonaException {
-        httpClient.request("POST", Const.GET_ORDER_URL, req, Payment.class, callback);
+    public void queryPayment(QueryPaymentRequest req, Callback<QueryPaymentResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.QUERY_PAYMENT_URL, req, QueryPaymentResponse.class, callback);
     }
 
     /**
@@ -277,8 +278,8 @@ public class LeonaClient implements Client {
      * @return 退款结果
      * @throws LeonaException 说明见类文档
      */
-    public Refund createRefund(RefundRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.REFUND_URL, req, Refund.class);
+    public RefundResponse createRefund(RefundRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.REFUND_URL, req, RefundResponse.class);
     }
 
     /**
@@ -289,8 +290,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createRefund(RefundRequest req, Callback<Refund> callback) throws LeonaException {
-        httpClient.request("POST", Const.REFUND_URL, req, Refund.class, callback);
+    public void createRefund(RefundRequest req, Callback<RefundResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.REFUND_URL, req, RefundResponse.class, callback);
     }
 
     /**
@@ -300,8 +301,8 @@ public class LeonaClient implements Client {
      * @return 查询退款结果
      * @throws LeonaException 说明见类文档
      */
-    public Refund getRefund(GetRefundRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.GET_REFUND_URL, req, Refund.class);
+    public QueryRefundResponse queryRefund(QueryRefundRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.QUERY_REFUND_URL, req, QueryRefundResponse.class);
     }
 
     /**
@@ -312,8 +313,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void getRefund(GetRefundRequest req, Callback<Refund> callback) throws LeonaException {
-        httpClient.request("POST", Const.GET_REFUND_URL, req, Refund.class, callback);
+    public void queryRefund(QueryRefundRequest req, Callback<QueryRefundResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.QUERY_REFUND_URL, req, QueryRefundResponse.class, callback);
     }
 
     /**
@@ -324,8 +325,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public Balance getBalance(GetBalanceRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.GET_BALANCE_URL, req, Balance.class);
+    public QueryBalanceResponse queryBalance(QueryBalanceRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.QUERY_BALANCE_URL, req, QueryBalanceResponse.class);
     }
 
     /**
@@ -336,8 +337,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void getBalance(GetBalanceRequest req, Callback<Balance> callback) throws LeonaException {
-        httpClient.request("POST", Const.GET_BALANCE_URL, req, Balance.class, callback);
+    public void queryBalance(QueryBalanceRequest req, Callback<QueryBalanceResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.QUERY_BALANCE_URL, req, QueryBalanceResponse.class, callback);
     }
 
     /**
@@ -348,8 +349,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public Withdrawal withdraw(WithdrawRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.WITHDRAW_URL, req, Withdrawal.class);
+    public WithdrawResponse withdraw(WithdrawRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.WITHDRAW_URL, req, WithdrawResponse.class);
     }
 
     /**
@@ -360,8 +361,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void withdraw(WithdrawRequest req, Callback<Withdrawal> callback) throws LeonaException {
-        httpClient.request("POST", Const.WITHDRAW_URL, req, Withdrawal.class, callback);
+    public void withdraw(WithdrawRequest req, Callback<WithdrawResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.WITHDRAW_URL, req, WithdrawResponse.class, callback);
     }
 
     /**
@@ -372,8 +373,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public Withdrawal getWithdrawalDetail(GetWithdrawalDetailRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.GET_WITHDRAW_DETAIL_URL, req, Withdrawal.class);
+    public QueryWithdrawalResponse queryWithdrawal(QueryWithdrawalRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.QUERY_WITHDRAWAL_URL, req, QueryWithdrawalResponse.class);
     }
 
     /**
@@ -384,8 +385,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void getWithdrawalDetail(GetWithdrawalDetailRequest req, Callback<Withdrawal> callback) throws LeonaException {
-        httpClient.request("POST", Const.GET_WITHDRAW_DETAIL_URL, req, Withdrawal.class, callback);
+    public void queryWithdrawal(QueryWithdrawalRequest req, Callback<QueryWithdrawalResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.QUERY_WITHDRAWAL_URL, req, QueryWithdrawalResponse.class, callback);
     }
 
     /**
@@ -396,8 +397,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void getBill(GetBillRequest req, OutputStream dst) throws LeonaException {
-        httpClient.download("POST", Const.GET_BILL_URL, req, dst);
+    public void downloadBills(DownloadBillsRequest req, OutputStream dst) throws LeonaException {
+        httpClient.download("POST", Const.DOWNLOAD_BILLS_URL, req, dst);
     }
 
     /**
@@ -408,8 +409,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void getBill(GetBillRequest req, Callback<OutputStream> callback) throws LeonaException {
-        httpClient.download("POST", Const.GET_BILL_URL, req, callback);
+    public void downloadBills(DownloadBillsRequest req, Callback<OutputStream> callback) throws LeonaException {
+        httpClient.download("POST", Const.DOWNLOAD_BILLS_URL, req, callback);
     }
 
     /**
@@ -420,8 +421,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public JSPayResponse createJSPay(JSPayRequest req) throws LeonaException {
-        return httpClient.request("POST", Const.JS_PAY_URL, req, JSPayResponse.class);
+    public JspayPaymentResponse createJspayPayment(JspayPaymentRequest req) throws LeonaException {
+        return httpClient.request("POST", Const.JSPAY_PAYMENT_URL, req, JspayPaymentResponse.class);
     }
 
     /**
@@ -432,8 +433,8 @@ public class LeonaClient implements Client {
      * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createJSPay(JSPayRequest req, Callback<JSPayResponse> callback) throws LeonaException {
-        httpClient.request("POST", Const.JS_PAY_URL, req, JSPayResponse.class, callback);
+    public void createJspayPayment(JspayPaymentRequest req, Callback<JspayPaymentResponse> callback) throws LeonaException {
+        httpClient.request("POST", Const.JSPAY_PAYMENT_URL, req, JspayPaymentResponse.class, callback);
     }
 
 

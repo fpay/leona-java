@@ -3,22 +3,18 @@ package com.lehuipay.leona.model;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
 
-public class GetRefundRequest {
+public class QueryPaymentRequest {
 
-
-    public GetRefundRequest(Builder builder) {
+    public QueryPaymentRequest(Builder builder) {
         if (CommonUtil.isEmpty(builder.merchantID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetRefundRequest, merchantID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.QueryPaymentRequest, merchantID should not be empty");
         }
-        if (CommonUtil.isEmpty(builder.orderNo) && CommonUtil.isEmpty(builder.transactionID) &&
-                CommonUtil.isEmpty(builder.refundNo) && CommonUtil.isEmpty(builder.refundID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetRefundRequest, at least one of orderNo, transactionID, refundNo, refundID");
+        if (CommonUtil.isEmpty(builder.orderNo) && CommonUtil.isEmpty(builder.transactionID)) {
+            throw new NumberFormatException("init com.lehuipay.leona.model.QueryPaymentRequest, at least one of orderNo and transactionID");
         }
         this.merchantID = builder.merchantID;
         this.orderNo = builder.orderNo;
         this.transactionID = builder.transactionID;
-        this.refundNo = builder.refundNo;
-        this.refundID = builder.refundID;
     }
 
     @JSONField(name = "merchant_id")
@@ -29,12 +25,6 @@ public class GetRefundRequest {
 
     @JSONField(name = "transaction_id")
     private String transactionID;
-
-    @JSONField(name = "refund_no")
-    private String refundNo;
-
-    @JSONField(name = "refund_id")
-    private String refundID;
 
     public String getMerchantID() {
         return merchantID;
@@ -48,29 +38,18 @@ public class GetRefundRequest {
         return transactionID;
     }
 
-    public String getRefundNo() {
-        return refundNo;
-    }
-
-    public String getRefundID() {
-        return refundID;
-    }
-
     public static Builder builder(){
         return new Builder();
     }
-
     public static class Builder {
         private String merchantID;
         private String orderNo;
         private String transactionID;
-        private String refundNo;
-        private String refundID;
 
         public Builder() {}
 
-        public GetRefundRequest build(){
-            return new GetRefundRequest(this);
+        public QueryPaymentRequest build(){
+            return new QueryPaymentRequest(this);
         }
 
         public Builder setMerchantID(String merchantID) {
@@ -85,16 +64,6 @@ public class GetRefundRequest {
 
         public Builder setTransactionID(String transactionID) {
             this.transactionID = transactionID;
-            return this;
-        }
-
-        public Builder setRefundNo(String refundNo) {
-            this.refundNo = refundNo;
-            return this;
-        }
-
-        public Builder setRefundID(String refundID) {
-            this.refundID = refundID;
             return this;
         }
     }

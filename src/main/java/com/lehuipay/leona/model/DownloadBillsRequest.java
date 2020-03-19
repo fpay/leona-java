@@ -6,17 +6,17 @@ import com.lehuipay.leona.utils.CommonUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class GetBillRequest {
+public class DownloadBillsRequest {
 
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-    public GetBillRequest(Builder builder) {
+    public DownloadBillsRequest(Builder builder) {
         if (CommonUtil.isEmpty(builder.merchantID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetBillRequest, merchantID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.DownloadBillsRequest, merchantID should not be empty");
         }
 
         if (CommonUtil.isEmpty(builder.date)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetBillRequest, date should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.DownloadBillsRequest, date should not be empty");
         }
 
         try {
@@ -26,7 +26,7 @@ public class GetBillRequest {
                 throw new ParseException("", 0);
             }
         } catch (ParseException e) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetBillRequest, date format should like 2006-01-02");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.DownloadBillsRequest, date format should like 2006-01-02");
         }
 
         this.merchantID = builder.merchantID;
@@ -58,8 +58,8 @@ public class GetBillRequest {
 
         public Builder() {}
 
-        public GetBillRequest build(){
-            return new GetBillRequest(this);
+        public DownloadBillsRequest build(){
+            return new DownloadBillsRequest(this);
         }
 
         public Builder setMerchantID(String merchantID) {

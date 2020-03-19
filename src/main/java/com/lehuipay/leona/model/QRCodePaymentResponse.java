@@ -2,7 +2,7 @@ package com.lehuipay.leona.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class JSPayResponse {
+public class QRCodePaymentResponse {
 
     @JSONField(name = "transaction_id")
     private String transactionID;
@@ -13,11 +13,8 @@ public class JSPayResponse {
     @JSONField(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "prepay_id")
-    private String prepayID;
-
-    @JSONField(name = "js_data")
-    private String jsData;
+    @JSONField(name = "url")
+    private String url;
 
     public String getTransactionID() {
         return transactionID;
@@ -43,30 +40,21 @@ public class JSPayResponse {
         this.merchantID = merchantID;
     }
 
-    public String getPrepayID() {
-        return prepayID;
+    public String getUrl() {
+        return url;
     }
 
-    public void setPrepayID(String prepayID) {
-        this.prepayID = prepayID;
-    }
-
-    public String getJsData() {
-        return jsData;
-    }
-
-    public void setJsData(String jsData) {
-        this.jsData = jsData;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
     public String toString() {
-        return "JSPayResponse{" +
+        return "QRCodePayResponse{" +
                 "transactionID='" + transactionID + '\'' +
                 ", orderNo='" + orderNo + '\'' +
                 ", merchantID='" + merchantID + '\'' +
-                ", prepayID='" + prepayID + '\'' +
-                ", jsData='" + jsData + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }

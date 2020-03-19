@@ -3,14 +3,14 @@ package com.lehuipay.leona.model;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
 
-public class GetWithdrawalDetailRequest {
+public class QueryWithdrawalRequest {
 
-    public GetWithdrawalDetailRequest(Builder builder) {
+    public QueryWithdrawalRequest(Builder builder) {
         if (CommonUtil.isEmpty(builder.merchantID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetWithdrawalDetailRequest, merchantID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.QueryWithdrawalRequest, merchantID should not be empty");
         }
         if (CommonUtil.isEmpty(builder.requestID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.GetWithdrawalDetailRequest, requestID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.QueryWithdrawalRequest, requestID should not be empty");
         }
         this.merchantID = builder.merchantID;
         this.requestID = builder.requestID;
@@ -40,8 +40,8 @@ public class GetWithdrawalDetailRequest {
 
         public Builder() {}
 
-        public GetWithdrawalDetailRequest build(){
-            return new GetWithdrawalDetailRequest(this);
+        public QueryWithdrawalRequest build(){
+            return new QueryWithdrawalRequest(this);
         }
 
         public Builder setMerchantID(String merchantID) {

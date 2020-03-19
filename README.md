@@ -26,14 +26,14 @@ Client client = LeonaClient.builder()
 
 // 异步
 try {
-    final QRCodePayRequest request = QRCodePayRequest.builder()
+    final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
             .setMerchantID(merchantID)
             .setTerminalID("2")
             .setOrderNo("20200313000000000001")
             .setAmount(1)
             .setTags(new String[]{"tag1", "tag2"})
             .build();
-    client.qrCodePay(request, (e, data) -> {
+    client.createQRCodePayment(request, (e, data) -> {
         if (e != null) {
             System.err.println(e);
             return;
@@ -52,14 +52,14 @@ try {
 
 // 同步
 try {
-    final QRCodePayRequest request = QRCodePayRequest.builder()
+    final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
             .setMerchantID(merchantID)
             .setTerminalID("2")
             .setOrderNo("20200313000000000001")
             .setAmount(1)
             .setTags(new String[]{"tag1", "tag2"})
             .build();
-    final QRCodePayResponse response = client.qrCodePay(request);
+    final QRCodePayResponse response = client.createQRCodePayment(request);
     System.out.println(response);
 } catch (LeonaException e) {
     System.err.println(e);

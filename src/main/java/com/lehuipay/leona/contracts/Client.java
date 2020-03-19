@@ -2,22 +2,25 @@ package com.lehuipay.leona.contracts;
 
 import com.lehuipay.leona.Callback;
 import com.lehuipay.leona.exception.LeonaException;
-import com.lehuipay.leona.model.GetBalanceRequest;
-import com.lehuipay.leona.model.Balance;
-import com.lehuipay.leona.model.GetBillRequest;
-import com.lehuipay.leona.model.GetOrderRequest;
-import com.lehuipay.leona.model.GetRefundRequest;
-import com.lehuipay.leona.model.GetWithdrawalDetailRequest;
-import com.lehuipay.leona.model.JSPayRequest;
-import com.lehuipay.leona.model.JSPayResponse;
-import com.lehuipay.leona.model.MicroPayRequest;
-import com.lehuipay.leona.model.Payment;
-import com.lehuipay.leona.model.QRCodePayRequest;
-import com.lehuipay.leona.model.QRCodePayResponse;
-import com.lehuipay.leona.model.Refund;
+import com.lehuipay.leona.model.MicropayPaymentResponse;
+import com.lehuipay.leona.model.QueryBalanceRequest;
+import com.lehuipay.leona.model.QueryBalanceResponse;
+import com.lehuipay.leona.model.DownloadBillsRequest;
+import com.lehuipay.leona.model.QueryPaymentRequest;
+import com.lehuipay.leona.model.QueryPaymentResponse;
+import com.lehuipay.leona.model.QueryRefundRequest;
+import com.lehuipay.leona.model.QueryRefundResponse;
+import com.lehuipay.leona.model.QueryWithdrawalRequest;
+import com.lehuipay.leona.model.JspayPaymentRequest;
+import com.lehuipay.leona.model.JspayPaymentResponse;
+import com.lehuipay.leona.model.MicropayPaymentRequest;
+import com.lehuipay.leona.model.QRCodePaymentRequest;
+import com.lehuipay.leona.model.QRCodePaymentResponse;
 import com.lehuipay.leona.model.RefundRequest;
+import com.lehuipay.leona.model.RefundResponse;
 import com.lehuipay.leona.model.WithdrawRequest;
-import com.lehuipay.leona.model.Withdrawal;
+import com.lehuipay.leona.model.QueryWithdrawalResponse;
+import com.lehuipay.leona.model.WithdrawResponse;
 
 import java.io.OutputStream;
 
@@ -27,52 +30,52 @@ import java.io.OutputStream;
 public interface Client {
 
     // 二维码支付
-    QRCodePayResponse createQRCodePay(QRCodePayRequest req) throws LeonaException;
+    QRCodePaymentResponse createQRCodePayment(QRCodePaymentRequest req) throws LeonaException;
 
-    void createQRCodePay(QRCodePayRequest req, Callback<QRCodePayResponse> callback) throws LeonaException;
+    void createQRCodePayment(QRCodePaymentRequest req, Callback<QRCodePaymentResponse> callback) throws LeonaException;
 
     // 刷卡支付
-    Payment createMicroPay(MicroPayRequest req) throws LeonaException;
+    MicropayPaymentResponse createMicropayPayment(MicropayPaymentRequest req) throws LeonaException;
 
-    void createMicroPay(MicroPayRequest req, Callback<Payment> callback) throws LeonaException;
+    void createMicropayPayment(MicropayPaymentRequest req, Callback<MicropayPaymentResponse> callback) throws LeonaException;
 
     // 查询交易
-    Payment getOrder(GetOrderRequest req) throws LeonaException;
+    QueryPaymentResponse queryPayment(QueryPaymentRequest req) throws LeonaException;
 
-    void getOrder(GetOrderRequest req, Callback<Payment> callback) throws LeonaException;
+    void queryPayment(QueryPaymentRequest req, Callback<QueryPaymentResponse> callback) throws LeonaException;
 
     // 退款
-    Refund createRefund(RefundRequest req) throws LeonaException;
+    RefundResponse createRefund(RefundRequest req) throws LeonaException;
 
-    void createRefund(RefundRequest req, Callback<Refund> callback) throws LeonaException;
+    void createRefund(RefundRequest req, Callback<RefundResponse> callback) throws LeonaException;
 
     // 查询退款
-    Refund getRefund(GetRefundRequest req) throws LeonaException;
+    QueryRefundResponse queryRefund(QueryRefundRequest req) throws LeonaException;
 
-    void getRefund(GetRefundRequest req, Callback<Refund> callback) throws LeonaException;
+    void queryRefund(QueryRefundRequest req, Callback<QueryRefundResponse> callback) throws LeonaException;
 
     // 查询余额
-    Balance getBalance(GetBalanceRequest req) throws LeonaException;
+    QueryBalanceResponse queryBalance(QueryBalanceRequest req) throws LeonaException;
 
-    void getBalance(GetBalanceRequest req, Callback<Balance> callback) throws LeonaException;
+    void queryBalance(QueryBalanceRequest req, Callback<QueryBalanceResponse> callback) throws LeonaException;
 
     // 手动提现
-    Withdrawal withdraw(WithdrawRequest req) throws LeonaException;
+    WithdrawResponse withdraw(WithdrawRequest req) throws LeonaException;
 
-    void withdraw(WithdrawRequest req, Callback<Withdrawal> callback) throws LeonaException;
+    void withdraw(WithdrawRequest req, Callback<WithdrawResponse> callback) throws LeonaException;
 
     // 查询提现结果
-    Withdrawal getWithdrawalDetail(GetWithdrawalDetailRequest req) throws LeonaException;
+    QueryWithdrawalResponse queryWithdrawal(QueryWithdrawalRequest req) throws LeonaException;
 
-    void getWithdrawalDetail(GetWithdrawalDetailRequest req, Callback<Withdrawal> callback) throws LeonaException;
+    void queryWithdrawal(QueryWithdrawalRequest req, Callback<QueryWithdrawalResponse> callback) throws LeonaException;
 
     // 账单下载
-    void getBill(GetBillRequest req, OutputStream dst) throws LeonaException;
+    void downloadBills(DownloadBillsRequest req, OutputStream dst) throws LeonaException;
 
-    void getBill(GetBillRequest req, Callback<OutputStream> callback) throws LeonaException;
+    void downloadBills(DownloadBillsRequest req, Callback<OutputStream> callback) throws LeonaException;
 
     // 消费者扫商家二维码支付
-    JSPayResponse createJSPay(JSPayRequest req) throws LeonaException;
+    JspayPaymentResponse createJspayPayment(JspayPaymentRequest req) throws LeonaException;
 
-    void createJSPay(JSPayRequest req, Callback<JSPayResponse> callback) throws LeonaException;
+    void createJspayPayment(JspayPaymentRequest req, Callback<JspayPaymentResponse> callback) throws LeonaException;
 }

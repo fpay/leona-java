@@ -3,7 +3,6 @@ package com.lehuipay.leona.model;
 import com.alibaba.fastjson.annotation.JSONField;
 
 public class Withdrawal {
-
     @JSONField(name = "merchant_id")
     private String merchantID;
 
@@ -57,16 +56,5 @@ public class Withdrawal {
 
     public void setReason(String reason) {
         this.reason = reason;
-    }
-
-    @Override
-    public String toString() {
-        return "WithdrawResponse{" +
-                "merchantID='" + merchantID + '\'' +
-                ", requestID='" + requestID + '\'' +
-                ", amount=" + amount +
-                ", status='" + status + '\'' +
-                ", reason='" + reason + '\'' +
-                '}';
     }
 }

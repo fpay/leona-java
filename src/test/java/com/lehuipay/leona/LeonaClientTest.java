@@ -2,35 +2,37 @@ package com.lehuipay.leona;
 
 import com.lehuipay.leona.contracts.Client;
 import com.lehuipay.leona.exception.LeonaException;
-import com.lehuipay.leona.model.Balance;
-import com.lehuipay.leona.model.GetBalanceRequest;
-import com.lehuipay.leona.model.GetBillRequest;
-import com.lehuipay.leona.model.GetOrderRequest;
-import com.lehuipay.leona.model.GetRefundRequest;
-import com.lehuipay.leona.model.GetWithdrawalDetailRequest;
-import com.lehuipay.leona.model.JSPayRequest;
-import com.lehuipay.leona.model.JSPayResponse;
-import com.lehuipay.leona.model.MicroPayRequest;
-import com.lehuipay.leona.model.Payment;
-import com.lehuipay.leona.model.QRCodePayRequest;
-import com.lehuipay.leona.model.QRCodePayResponse;
-import com.lehuipay.leona.model.Refund;
+import com.lehuipay.leona.model.MicropayPaymentResponse;
+import com.lehuipay.leona.model.QueryBalanceResponse;
+import com.lehuipay.leona.model.QueryBalanceRequest;
+import com.lehuipay.leona.model.DownloadBillsRequest;
+import com.lehuipay.leona.model.QueryPaymentRequest;
+import com.lehuipay.leona.model.QueryPaymentResponse;
+import com.lehuipay.leona.model.QueryRefundRequest;
+import com.lehuipay.leona.model.QueryRefundResponse;
+import com.lehuipay.leona.model.QueryWithdrawalRequest;
+import com.lehuipay.leona.model.JspayPaymentRequest;
+import com.lehuipay.leona.model.JspayPaymentResponse;
+import com.lehuipay.leona.model.MicropayPaymentRequest;
+import com.lehuipay.leona.model.QRCodePaymentRequest;
+import com.lehuipay.leona.model.QRCodePaymentResponse;
 import com.lehuipay.leona.model.RefundRequest;
+import com.lehuipay.leona.model.RefundResponse;
 import com.lehuipay.leona.model.WithdrawRequest;
-import com.lehuipay.leona.model.Withdrawal;
+import com.lehuipay.leona.model.QueryWithdrawalResponse;
+import com.lehuipay.leona.model.WithdrawResponse;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Date;
 
 public class LeonaClientTest {
 
     final private static String agent_id = "9527";
-    final private static String agent_key = ""; //
+    final private static String agent_key = "asdfghjkloiuytre"; //
     final private static String secret_key = "";
-    final private static String merchantID = "";
+    final private static String merchantID = "7";
 
     final private String cliPriKeyFile = "./src/test/resources/stating_cli_rsa_private_key.pem";
     final private String serPubKeyFile = "./src/test/resources/stating_lh_rsa_public_key.pem";
@@ -52,17 +54,17 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testQRCodePay() {
+    public void testCreateQRCodePayment() {
         long start = System.currentTimeMillis();
         try {
-            final QRCodePayRequest request = QRCodePayRequest.builder()
+            final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("2")
                     .setOrderNo("20200313000000000001")
                     .setAmount(1)
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
-            final QRCodePayResponse response = client.createQRCodePay(request);
+            final QRCodePaymentResponse response = client.createQRCodePayment(request);
             final String url = response.getUrl();
             System.out.println(response);
         } catch (LeonaException e) {
@@ -72,17 +74,17 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testQRCodePayCallback() {
+    public void testCreateQRCodePaymentCallback() {
         long start = System.currentTimeMillis();
         try {
-            final QRCodePayRequest request = QRCodePayRequest.builder()
+            final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("2")
                     .setOrderNo("20200313000000000001")
                     .setAmount(1)
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
-            client.createQRCodePay(request, (e, data) -> {
+            client.createQRCodePayment(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;
@@ -102,10 +104,10 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testMicroPayPay() {
+    public void testCreateMicropayPayment() {
         long start = System.currentTimeMillis();
         try {
-            final MicroPayRequest request = MicroPayRequest.builder()
+            final MicropayPaymentRequest request = MicropayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("2")
                     .setOrderNo("20200313000000000003")
@@ -114,7 +116,7 @@ public class LeonaClientTest {
                     .setClientIP("127.0.0.1")
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
-            final Payment response = client.createMicroPay(request);
+            final MicropayPaymentResponse response = client.createMicropayPayment(request);
             System.out.println(response);
 
             switch (response.getStatus()) {
@@ -136,19 +138,19 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testMicroPayPayCallback() {
+    public void testCreateMicropayPaymentCallback() {
         long start = System.currentTimeMillis();
         try {
-            final MicroPayRequest request = MicroPayRequest.builder()
+            final MicropayPaymentRequest request = MicropayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("2")
-                    .setOrderNo("20200313000000000003")
+                    .setOrderNo("20200319000000000003")
                     .setAmount(2)
-                    .setAuthCode("281848450128437300")
+                    .setAuthCode("134740991720945053")
                     .setClientIP("127.0.0.1")
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
-            client.createMicroPay(request, (e, data) -> {
+            client.createMicropayPayment(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;
@@ -181,14 +183,14 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetOrder() {
+    public void testQueryPayment() {
         try {
-            final GetOrderRequest request = GetOrderRequest.builder()
+            final QueryPaymentRequest request = QueryPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setOrderNo("20200313000000000004")
                     .setTransactionID(null)
                     .build();
-            final Payment response = client.getOrder(request);
+            final QueryPaymentResponse response = client.queryPayment(request);
             System.out.println(response);
 
             switch (response.getStatus()) {
@@ -210,15 +212,15 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetOrderCallback() {
+    public void testQueryPaymentCallback() {
         long start = System.currentTimeMillis();
-        final GetOrderRequest request = GetOrderRequest.builder()
+        final QueryPaymentRequest request = QueryPaymentRequest.builder()
                 .setMerchantID(merchantID)
                 .setOrderNo("20200313000000000004")
                 .setTransactionID(null)
                 .build();
         try {
-            client.getOrder(request, (e, data) -> {
+            client.queryPayment(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;
@@ -252,7 +254,7 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testRefund() {
+    public void testCreateRefund() {
         long start = System.currentTimeMillis();
         try {
             final RefundRequest request = RefundRequest.builder()
@@ -261,7 +263,7 @@ public class LeonaClientTest {
                     .setRefundNo("Re_20200313000000000004")
                     .setAmount(1)
                     .build();
-            final Refund response = client.createRefund(request);
+            final RefundResponse response = client.createRefund(request);
             System.out.println(response);
 
             switch (response.getStatus()) {
@@ -283,7 +285,7 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testRefundCallback() {
+    public void testCreateRefundCallback() {
         long start = System.currentTimeMillis();
         try {
             final RefundRequest request = RefundRequest.builder()
@@ -325,14 +327,14 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetRefund() {
+    public void testQueryRefund() {
         long start = System.currentTimeMillis();
         try {
-            final GetRefundRequest request = GetRefundRequest.builder()
+            final QueryRefundRequest request = QueryRefundRequest.builder()
                     .setMerchantID(merchantID)
                     .setRefundNo("207712193487548001010")
                     .build();
-            final Refund response = client.getRefund(request);
+            final QueryRefundResponse response = client.queryRefund(request);
             System.out.println(response);
 
             switch (response.getStatus()) {
@@ -354,14 +356,14 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetRefundCallback() {
+    public void testQueryRefundCallback() {
         long start = System.currentTimeMillis();
         try {
-            final GetRefundRequest request = GetRefundRequest.builder()
+            final QueryRefundRequest request = QueryRefundRequest.builder()
                     .setMerchantID(merchantID)
                     .setRefundNo("207712193487548001010")
                     .build();
-            client.getRefund(request, (e, data) -> {
+            client.queryRefund(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;
@@ -394,11 +396,11 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetBalance() {
+    public void testQueryBalance() {
         long start = System.currentTimeMillis();
         try {
-            final GetBalanceRequest request = GetBalanceRequest.builder().setMerchantID(merchantID).build();
-            final Balance response = client.getBalance(request);
+            final QueryBalanceRequest request = QueryBalanceRequest.builder().setMerchantID(merchantID).build();
+            final QueryBalanceResponse response = client.queryBalance(request);
             System.out.println(response);
         } catch (LeonaException e) {
             System.err.println(e);
@@ -407,11 +409,11 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetBalanceCallback() {
+    public void testQueryBalanceCallback() {
         long start = System.currentTimeMillis();
         try {
-            final GetBalanceRequest request = GetBalanceRequest.builder().setMerchantID(merchantID).build();
-            client.getBalance(request, (e, data) -> {
+            final QueryBalanceRequest request = QueryBalanceRequest.builder().setMerchantID(merchantID).build();
+            client.queryBalance(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;
@@ -439,7 +441,7 @@ public class LeonaClientTest {
                     .setRequestID("20200313000000000003")
                     .setAmount(1000)
                     .build();
-            final Withdrawal resp = client.withdraw(request);
+            final WithdrawResponse resp = client.withdraw(request);
             System.out.println(resp);
         } catch (LeonaException e) {
             System.err.println(e);
@@ -476,14 +478,14 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetWithdrawalDetail() {
+    public void testQueryWithdrawal() {
         long start = System.currentTimeMillis();
         try {
-            final GetWithdrawalDetailRequest request = GetWithdrawalDetailRequest.builder()
+            final QueryWithdrawalRequest request = QueryWithdrawalRequest.builder()
                     .setMerchantID(merchantID)
                     .setRequestID("20200311201810003")
                     .build();
-            final Withdrawal response = client.getWithdrawalDetail(request);
+            final QueryWithdrawalResponse response = client.queryWithdrawal(request);
             System.out.println(response);
 
             switch (response.getStatus()) {
@@ -507,14 +509,14 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetWithdrawalDetailCallback() {
+    public void testQueryWithdrawalCallback() {
         long start = System.currentTimeMillis();
         try {
-            final GetWithdrawalDetailRequest request = GetWithdrawalDetailRequest.builder()
+            final QueryWithdrawalRequest request = QueryWithdrawalRequest.builder()
                     .setMerchantID(merchantID)
                     .setRequestID("20200311201810003")
                     .build();
-            client.getWithdrawalDetail(request, (e, data) -> {
+            client.queryWithdrawal(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;
@@ -549,10 +551,10 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testCreateJSPay() {
+    public void testCreateJspayPayment() {
         long start = System.currentTimeMillis();
         try {
-            final JSPayRequest request = JSPayRequest.builder()
+            final JspayPaymentRequest request = JspayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("10093")
                     .setOrderNo("202003180000000000003")
@@ -563,7 +565,7 @@ public class LeonaClientTest {
                     .setClientIP("127.0.0.1")
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
-            final JSPayResponse response = client.createJSPay(request);
+            final JspayPaymentResponse response = client.createJspayPayment(request);
             final String transactionID = response.getTransactionID();
             final String jsData = response.getJsData();
             System.out.println(response);
@@ -574,10 +576,10 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testCreateJSPayCallback() {
+    public void testCreateJspayPaymentCallback() {
         long start = System.currentTimeMillis();
         try {
-            final JSPayRequest request = JSPayRequest.builder()
+            final JspayPaymentRequest request = JspayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("10093")
                     .setOrderNo("202003180000000000001")
@@ -588,7 +590,7 @@ public class LeonaClientTest {
                     .setClientIP("127.0.0.1")
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
-            client.createJSPay(request, (e, data) -> {
+            client.createJspayPayment(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;
@@ -608,15 +610,15 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetBill() {
+    public void testDownloadBills() {
         long start = System.currentTimeMillis();
         try {
-            final GetBillRequest request = GetBillRequest.builder()
+            final DownloadBillsRequest request = DownloadBillsRequest.builder()
                     .setMerchantID(merchantID)
                     .setDate("2020-03-03")
                     .build();
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            client.getBill(request, outputStream);
+            client.downloadBills(request, outputStream);
             System.out.println(outputStream.toString());
         } catch (LeonaException e) {
             System.err.println(e);
@@ -625,14 +627,14 @@ public class LeonaClientTest {
     }
 
     @Test
-    public void testGetBillCallback() {
+    public void testDownloadBillsCallback() {
         long start = System.currentTimeMillis();
         try {
-            final GetBillRequest request = GetBillRequest.builder()
+            final DownloadBillsRequest request = DownloadBillsRequest.builder()
                     .setMerchantID(merchantID)
                     .setDate("2020-03-03")
                     .build();
-            client.getBill(request, (e, data) -> {
+            client.downloadBills(request, (e, data) -> {
                 if (e != null) {
                     System.err.println(e);
                     return;

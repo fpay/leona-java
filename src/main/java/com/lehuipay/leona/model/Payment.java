@@ -40,9 +40,6 @@ public class Payment {
     @JSONField(name = "trade_type")
     private String tradeType;
 
-    @JSONField(name = "hint")
-    private String hint;
-
     @JSONField(name = "reason")
     private String reason;
 
@@ -148,14 +145,6 @@ public class Payment {
         this.tradeType = tradeType;
     }
 
-    public String getHint() {
-        return hint;
-    }
-
-    public void setHint(String hint) {
-        this.hint = hint;
-    }
-
     public String getReason() {
         return reason;
     }
@@ -195,7 +184,6 @@ public class Payment {
                 ", status='" + status + '\'' +
                 ", clientType='" + clientType + '\'' +
                 ", tradeType='" + tradeType + '\'' +
-                ", hint='" + hint + '\'' +
                 ", reason='" + reason + '\'' +
                 ", finishedAt=" + finishedAt +
                 ", createdAt=" + createdAt +

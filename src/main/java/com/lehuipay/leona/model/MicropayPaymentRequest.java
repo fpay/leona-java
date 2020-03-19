@@ -3,24 +3,32 @@ package com.lehuipay.leona.model;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
 
-public class QRCodePayRequest {
+public class MicropayPaymentRequest {
 
-    public QRCodePayRequest(Builder builder) {
+    public MicropayPaymentRequest(Builder builder) {
         if (CommonUtil.isEmpty(builder.merchantID)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.QRCodePayRequest, merchantID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.MicropayPaymentRequest, merchantID should not be empty");
+        }
+        if (CommonUtil.isEmpty(builder.terminalID)) {
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.MicropayPaymentRequest, terminalID should not be empty");
         }
         if (CommonUtil.isEmpty(builder.orderNo)) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.QRCodePayRequest, merchantID should not be empty");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.MicropayPaymentRequest, orderNo should not be empty");
         }
         if (builder.amount <= 0) {
-            throw new IllegalArgumentException("init com.lehuipay.leona.model.QRCodePayRequest, amount should be greater than zero");
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.MicropayPaymentRequest, amount should be greater than zero");
         }
+        if (CommonUtil.isEmpty(builder.authCode)) {
+            throw new IllegalArgumentException("init com.lehuipay.leona.model.MicropayPaymentRequest, authCode should not be empty");
+        }
+
         this.merchantID = builder.merchantID;
         this.terminalID = builder.terminalID;
         this.orderNo = builder.orderNo;
         this.amount = builder.amount;
+        this.authCode = builder.authCode;
         this.notifyURL = builder.notifyURL;
-        this.callbackURL = builder.callbackURL;
+        this.clientIP = builder.clientIP;
         this.tags = builder.tags;
     }
 
@@ -36,11 +44,14 @@ public class QRCodePayRequest {
     @JSONField(name = "amount")
     private Integer amount;
 
+    @JSONField(name = "auth_code")
+    private String authCode;
+
     @JSONField(name = "notify_url")
     private String notifyURL;
 
-    @JSONField(name = "callback_url")
-    private String callbackURL;
+    @JSONField(name = "client_ip")
+    private String clientIP;
 
     @JSONField(name = "tags")
     private String[] tags;
@@ -61,12 +72,16 @@ public class QRCodePayRequest {
         return amount;
     }
 
+    public String getAuthCode() {
+        return authCode;
+    }
+
     public String getNotifyURL() {
         return notifyURL;
     }
 
-    public String getCallbackURL() {
-        return callbackURL;
+    public String getClientIP() {
+        return clientIP;
     }
 
     public String[] getTags() {
@@ -82,14 +97,15 @@ public class QRCodePayRequest {
         private String terminalID;
         private String orderNo;
         private Integer amount;
+        private String authCode;
         private String notifyURL;
-        private String callbackURL;
+        private String clientIP;
         private String[] tags;
 
         public Builder() {}
 
-        public QRCodePayRequest build(){
-            return new QRCodePayRequest(this);
+        public MicropayPaymentRequest build(){
+            return new MicropayPaymentRequest(this);
         }
 
         public Builder setMerchantID(String merchantID) {
@@ -112,13 +128,18 @@ public class QRCodePayRequest {
             return this;
         }
 
+        public Builder setAuthCode(String authCode) {
+            this.authCode = authCode;
+            return this;
+        }
+
         public Builder setNotifyURL(String notifyURL) {
             this.notifyURL = notifyURL;
             return this;
         }
 
-        public Builder setCallbackURL(String callbackURL) {
-            this.callbackURL = callbackURL;
+        public Builder setClientIP(String clientIP) {
+            this.clientIP = clientIP;
             return this;
         }
 
