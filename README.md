@@ -8,7 +8,7 @@ LEhuipay OpeN Api SDK for Java
 <dependency>
     <groupId>com.github.roujiamo-cold</groupId>
     <artifactId>leona-java</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.3</version>
 </dependency>
 ``` 
 
