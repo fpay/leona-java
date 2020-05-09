@@ -1,7 +1,7 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
+import com.squareup.moshi.Json;
 
 public class QueryPaymentRequest {
 
@@ -17,13 +17,13 @@ public class QueryPaymentRequest {
         this.transactionID = builder.transactionID;
     }
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "order_no")
+    @Json(name = "order_no")
     private String orderNo;
 
-    @JSONField(name = "transaction_id")
+    @Json(name = "transaction_id")
     private String transactionID;
 
     public String getMerchantID() {

@@ -1,7 +1,7 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
+import com.squareup.moshi.Json;
 
 public class QueryWithdrawalRequest {
 
@@ -16,10 +16,10 @@ public class QueryWithdrawalRequest {
         this.requestID = builder.requestID;
     }
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "request_id")
+    @Json(name = "request_id")
     private String requestID;
 
     public String getMerchantID() {

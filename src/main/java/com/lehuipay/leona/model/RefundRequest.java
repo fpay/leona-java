@@ -1,7 +1,7 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
+import com.squareup.moshi.Json;
 
 public class RefundRequest {
 
@@ -25,19 +25,19 @@ public class RefundRequest {
         this.amount = builder.amount;
     }
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "order_no")
+    @Json(name = "order_no")
     private String orderNo;
 
-    @JSONField(name = "transaction_id")
+    @Json(name = "transaction_id")
     private String transactionID;
 
-    @JSONField(name = "refund_no")
+    @Json(name = "refund_no")
     private String refundNo;
 
-    @JSONField(name = "amount")
+    @Json(name = "amount")
     private Integer amount;
 
     public String getMerchantID() {

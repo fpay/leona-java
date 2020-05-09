@@ -1,8 +1,7 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
-
+import com.squareup.moshi.Json;
 import java.util.HashSet;
 
 public class JspayPaymentRequest {
@@ -54,34 +53,34 @@ public class JspayPaymentRequest {
         this.tags = builder.tags;
     }
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "terminal_id")
+    @Json(name = "terminal_id")
     private String terminalID;
 
-    @JSONField(name = "order_no")
+    @Json(name = "order_no")
     private String orderNo;
 
-    @JSONField(name = "amount")
+    @Json(name = "amount")
     private Integer amount;
 
-    @JSONField(name = "client_type")
+    @Json(name = "client_type")
     private String clientType;
 
-    @JSONField(name = "app_id")
+    @Json(name = "app_id")
     private String appID;
 
-    @JSONField(name = "buyer_id")
+    @Json(name = "buyer_id")
     private String buyerID;
 
-    @JSONField(name = "client_ip")
+    @Json(name = "client_ip")
     private String clientIP;
 
-    @JSONField(name = "notify_url")
+    @Json(name = "notify_url")
     private String notifyURL;
 
-    @JSONField(name = "tags")
+    @Json(name = "tags")
     private String[] tags;
 
     public String getMerchantID() {

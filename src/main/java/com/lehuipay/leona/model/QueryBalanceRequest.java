@@ -1,7 +1,7 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
+import com.squareup.moshi.Json;
 
 public class QueryBalanceRequest {
 
@@ -12,7 +12,7 @@ public class QueryBalanceRequest {
         this.merchantID = builder.merchantID;
     }
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
     public String getMerchantID() {

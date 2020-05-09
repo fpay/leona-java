@@ -1,21 +1,21 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.squareup.moshi.Json;
 
 public class Withdrawal {
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "request_id")
+    @Json(name = "request_id")
     private String requestID;
 
-    @JSONField(name = "amount")
+    @Json(name = "amount")
     private Integer amount;
 
-    @JSONField(name = "status")
+    @Json(name = "status")
     private String status;
 
-    @JSONField(name = "reason")
+    @Json(name = "reason")
     private String reason;
 
     public String getMerchantID() {

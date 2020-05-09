@@ -1,17 +1,17 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.contracts.ErrorCode;
+import com.squareup.moshi.Json;
 
 public class ErrorMessage implements ErrorCode {
 
-    @JSONField(name = "type")
+    @Json(name = "type")
     private String type;
 
-    @JSONField(name = "code")
+    @Json(name = "code")
     private String code;
 
-    @JSONField(name = "message")
+    @Json(name = "message")
     private String message;
 
     public String getType() {

@@ -1,16 +1,16 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.squareup.moshi.Json;
 
 public class QueryBalanceResponse {
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "amount")
+    @Json(name = "amount")
     private Integer amount;
 
-    @JSONField(name = "frozen_amount")
+    @Json(name = "frozen_amount")
     private Integer frozenAmount;
 
 

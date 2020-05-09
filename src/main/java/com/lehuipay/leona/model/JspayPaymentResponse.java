@@ -1,22 +1,22 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.squareup.moshi.Json;
 
 public class JspayPaymentResponse {
 
-    @JSONField(name = "transaction_id")
+    @Json(name = "transaction_id")
     private String transactionID;
 
-    @JSONField(name = "order_no")
+    @Json(name = "order_no")
     private String orderNo;
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "prepay_id")
+    @Json(name = "prepay_id")
     private String prepayID;
 
-    @JSONField(name = "js_data")
+    @Json(name = "js_data")
     private String jsData;
 
     public String getTransactionID() {

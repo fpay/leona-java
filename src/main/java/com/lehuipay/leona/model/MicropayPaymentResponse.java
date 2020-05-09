@@ -1,10 +1,10 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.squareup.moshi.Json;
 
 public class MicropayPaymentResponse extends Payment {
 
-    @JSONField(name = "hint")
+    @Json(name = "hint")
     private String hint;
 
     public String getHint() {

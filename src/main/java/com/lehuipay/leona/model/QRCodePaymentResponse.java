@@ -1,19 +1,19 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.squareup.moshi.Json;
 
 public class QRCodePaymentResponse {
 
-    @JSONField(name = "transaction_id")
+    @Json(name = "transaction_id")
     private String transactionID;
 
-    @JSONField(name = "order_no")
+    @Json(name = "order_no")
     private String orderNo;
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "url")
+    @Json(name = "url")
     private String url;
 
     public String getTransactionID() {

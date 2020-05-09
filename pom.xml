@@ -34,8 +34,9 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <version.moshi>1.8.0</version.moshi>
         <version.codec>1.10</version.codec>
-        <version.fastjson>1.2.62</version.fastjson>
+        <version.okio>2.2.2</version.okio>
         <version.okhttp>4.2.2</version.okhttp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -47,9 +48,14 @@
             <version>${version.codec}</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${version.fastjson}</version>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi</artifactId>
+            <version>${version.moshi}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okio</groupId>
+            <artifactId>okio</artifactId>
+            <version>${version.okio}</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

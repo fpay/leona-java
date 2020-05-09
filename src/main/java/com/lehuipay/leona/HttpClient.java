@@ -1,7 +1,5 @@
 package com.lehuipay.leona;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.lehuipay.leona.exception.LeonaErrorCodeEnum;
 import com.lehuipay.leona.exception.LeonaException;
 import com.lehuipay.leona.exception.LeonaRuntimeException;
@@ -10,6 +8,8 @@ import com.lehuipay.leona.interceptor.L2Interceptor;
 import com.lehuipay.leona.interceptor.SignInterceptor;
 import com.lehuipay.leona.model.ErrorMessage;
 import com.lehuipay.leona.utils.CommonUtil;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -114,7 +114,8 @@ public class HttpClient {
     }
 
     private <T> Request buildRequest(String method, String url, T data) {
-        String requestBody = JSONObject.toJSONString(data);
+        final JsonAdapter adapter  = new Moshi.Builder().build().adapter(data.getClass());
+        String requestBody = adapter.toJson(data);
         return new Request.Builder()
                 .url(url)
                 .method(method, RequestBody.create(requestBody, mediaTypeJSON))
@@ -125,9 +126,11 @@ public class HttpClient {
         String bodyStr = response.body() == null ? "" : response.body().string();
 
         if (response.isSuccessful()) {
-            return JSON.parseObject(bodyStr, clazz);
+            final JsonAdapter<T> adapter = new Moshi.Builder().build().adapter(clazz);
+            return adapter.fromJson(bodyStr);
         } else {
-            final ErrorMessage errorMessage = JSON.parseObject(bodyStr, ErrorMessage.class);
+            final JsonAdapter<ErrorMessage> jsonAdapter = new Moshi.Builder().build().adapter(ErrorMessage.class);
+            final ErrorMessage errorMessage = jsonAdapter.fromJson(bodyStr);
             throw new LeonaException(errorMessage);
         }
     }
@@ -167,7 +170,8 @@ public class HttpClient {
 
     private void parseResponse2Stream(Response response, OutputStream dst) throws IOException, LeonaException {
         if (!response.isSuccessful()) {
-            final ErrorMessage errorMessage = JSON.parseObject(response.body().string(), ErrorMessage.class);
+            final JsonAdapter<ErrorMessage> jsonAdapter = new Moshi.Builder().build().adapter(ErrorMessage.class);
+            final ErrorMessage errorMessage = jsonAdapter.fromJson(response.body().string());
             throw new LeonaException(errorMessage);
         }
 

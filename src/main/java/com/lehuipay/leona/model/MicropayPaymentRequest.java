@@ -1,7 +1,7 @@
 package com.lehuipay.leona.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.lehuipay.leona.utils.CommonUtil;
+import com.squareup.moshi.Json;
 
 public class MicropayPaymentRequest {
 
@@ -32,28 +32,28 @@ public class MicropayPaymentRequest {
         this.tags = builder.tags;
     }
 
-    @JSONField(name = "merchant_id")
+    @Json(name = "merchant_id")
     private String merchantID;
 
-    @JSONField(name = "terminal_id")
+    @Json(name = "terminal_id")
     private String terminalID;
 
-    @JSONField(name = "order_no")
+    @Json(name = "order_no")
     private String orderNo;
 
-    @JSONField(name = "amount")
+    @Json(name = "amount")
     private Integer amount;
 
-    @JSONField(name = "auth_code")
+    @Json(name = "auth_code")
     private String authCode;
 
-    @JSONField(name = "notify_url")
+    @Json(name = "notify_url")
     private String notifyURL;
 
-    @JSONField(name = "client_ip")
+    @Json(name = "client_ip")
     private String clientIP;
 
-    @JSONField(name = "tags")
+    @Json(name = "tags")
     private String[] tags;
 
     public String getMerchantID() {
