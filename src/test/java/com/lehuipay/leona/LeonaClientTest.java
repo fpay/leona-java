@@ -25,29 +25,33 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Date;
 
 public class LeonaClientTest {
 
-    final private static String agent_id = "9527";
-    final private static String agent_key = "asdfghjkloiuytre"; //
+    final private static String agent_id = "8888";
+    final private static String agent_key = "QWER1234567ASDF"; //
     final private static String secret_key = "";
-    final private static String merchantID = "7";
+    final private static String merchantID = "460";
 
-    final private String cliPriKeyFile = "./src/test/resources/stating_cli_rsa_private_key.pem";
-    final private String serPubKeyFile = "./src/test/resources/stating_lh_rsa_public_key.pem";
+//    final private String cliPriKeyFile = "./src/test/resources/stating_cli_rsa_private_key.pem";
+//    final private String serPubKeyFile = "./src/test/resources/stating_lh_rsa_public_key.pem";
+
+    final private String cliPriKeyFile = "./src/test/resources/pkcs8_cli_rsa_private_key.pem";
+    final private String serPubKeyFile = "./src/test/resources/pkcs8_lh_rsa_public_key.pem";
 
     Client client;
 
     @Before
-    public void init() {
+    public void init() throws IOException {
         client = LeonaClient.builder()
                 .setAgentID(agent_id)
                 .setAgentKey(agent_key)
-//                .setPartnerPriKey(cliPriKeyFile)
-//                .setLhPubKey(serPubKeyFile)
+                .setPartnerPriKey(cliPriKeyFile)
+                .setLhPubKey(serPubKeyFile)
 //                .setSecretKey(secret_key)
-//                .setEncryptionLevel(Const.HEADER_ENCRYPTION_LEVEL_L1)
+                .setEncryptionLevel(Const.HEADER_ENCRYPTION_LEVEL_L1)
 //                .setEncryptionLevel(Const.HEADER_ENCRYPTION_LEVEL_L2)
 //                .setEncryptionAccept(Const.HEADER_ENCRYPTION_LEVEL_L0)
                 .build();
@@ -187,7 +191,7 @@ public class LeonaClientTest {
         try {
             final QueryPaymentRequest request = QueryPaymentRequest.builder()
                     .setMerchantID(merchantID)
-                    .setOrderNo("20200313000000000004")
+                    .setOrderNo("202004080000000000009")
                     .setTransactionID(null)
                     .build();
             final QueryPaymentResponse response = client.queryPayment(request);

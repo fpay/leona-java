@@ -1,7 +1,6 @@
 package com.lehuipay.leona.utils;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -11,55 +10,14 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
-import java.util.Arrays;
 
-/**
- * AES128 算法
- * <p>
- * CBC 模式
- * <p>
- * PKCS7Padding 填充模式
- * <p>
- * CBC模式需要添加一个参数iv
- * <p>
- * 介于java 不支持PKCS7Padding，只支持PKCS5Padding 但是PKCS7Padding 和 PKCS5Padding 没有什么区别
- * 要实现在java端用PKCS7Padding填充，需要用到bouncycastle组件来实现
- */
+
 public class AESPKCS7 {
     // 算法名称
     final String KEY_ALGORITHM = "AES";
     // 加解密算法/模式/填充方式
-    final String algorithmStr = "AES/CBC/PKCS7Padding";
-    //
-    private Key key;
-    private Cipher cipher;
-
-    private void init(byte[] keyBytes) {
-
-        // 如果密钥不足16位，那么就补足.  这个if 中的内容很重要
-        int base = 16;
-        if (keyBytes.length % base != 0) {
-            int groups = keyBytes.length / base + 1;
-            byte[] temp = new byte[groups * base];
-            Arrays.fill(temp, (byte) 0);
-            System.arraycopy(keyBytes, 0, temp, 0, keyBytes.length);
-            keyBytes = temp;
-        }
-        // 初始化
-        Security.addProvider(new BouncyCastleProvider());
-        // 转化成JAVA的密钥格式
-        key = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
-        try {
-            // 初始化cipher
-            cipher = Cipher.getInstance(algorithmStr, "BC");
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | NoSuchPaddingException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    final String algorithmStr = "AES/CBC/PKCS5Padding";
 
     /**
      * 加密方法, 不对结果进行base64二次加密
@@ -71,16 +29,16 @@ public class AESPKCS7 {
      * @throws InvalidKeyException
      */
     public byte[] encrypt(byte[] content, byte[] keyBytes, byte[] iv) throws InvalidKeyException {
-        byte[] encryptedText = null;
-        init(keyBytes);
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
-            encryptedText = cipher.doFinal(content);
-        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+            Cipher cipher = Cipher.getInstance(algorithmStr);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
+            return cipher.doFinal(content);
+        } catch (InvalidAlgorithmParameterException | BadPaddingException | NoSuchPaddingException |
+                IllegalBlockSizeException | NoSuchAlgorithmException e) {
             // 该异常理应永远不会抛出
             throw new RuntimeException(e);
         }
-        return encryptedText;
     }
 
     /**
@@ -110,16 +68,16 @@ public class AESPKCS7 {
      * @throws InvalidKeyException
      */
     public byte[] decrypt(byte[] encryptedData, byte[] keyBytes, byte[] iv) throws InvalidKeyException {
-        byte[] encryptedText = null;
-        init(keyBytes);
         try {
-            cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
-            encryptedText = cipher.doFinal(encryptedData);
-        } catch (InvalidAlgorithmParameterException | IllegalBlockSizeException | BadPaddingException e) {
+            Cipher cipher = Cipher.getInstance(algorithmStr);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes, KEY_ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
+            return cipher.doFinal(encryptedData);
+        } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException | BadPaddingException |
+                NoSuchPaddingException | IllegalBlockSizeException e) {
             // 该异常理应永远不会抛出
             throw new RuntimeException(e);
         }
-        return encryptedText;
     }
 
     /**

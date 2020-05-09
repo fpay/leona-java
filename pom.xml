@@ -34,7 +34,6 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <version.bcprov>1.64</version.bcprov>
         <version.codec>1.10</version.codec>
         <version.fastjson>1.2.62</version.fastjson>
         <version.okhttp>4.2.2</version.okhttp>
@@ -42,11 +41,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>${version.bcprov}</version>
-        </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
