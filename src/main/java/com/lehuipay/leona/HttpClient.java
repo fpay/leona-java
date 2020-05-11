@@ -38,7 +38,7 @@ public class HttpClient {
         switch (CommonUtil.NVLL(options.getEncryptionLevel())) {
             case Const.HEADER_ENCRYPTION_LEVEL_L1:
                 L1Interceptor l1 = new L1Interceptor(new AESEncryptor(),
-                        new RSAEnctryptor(options.getPartnerPriKey(), options.getLhPubKey()), options.getEncryptionAccept());
+                        new RSAEnctryptor(options.getAgentPrivateKey(), options.getLehuipayPublicKey()), options.getEncryptionAccept());
                 builder.addInterceptor(l1);
                 break;
             case Const.HEADER_ENCRYPTION_LEVEL_L2:

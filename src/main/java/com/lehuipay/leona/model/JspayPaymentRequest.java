@@ -3,10 +3,11 @@ package com.lehuipay.leona.model;
 import com.lehuipay.leona.utils.CommonUtil;
 import com.squareup.moshi.Json;
 import java.util.HashSet;
+import java.util.Set;
 
 public class JspayPaymentRequest {
 
-    private HashSet clientTypeSet =  new HashSet() {
+    private Set clientTypeSet =  new HashSet() {
         {
             add("weixin");
             add("alipay");

@@ -42,7 +42,7 @@ public class L2Interceptor implements Interceptor {
 
         final Response response = chain.proceed(request);
 
-        if (!isIgnore(response)) {
+        if (isIgnore(response)) {
             return response;
         }
 

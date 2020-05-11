@@ -7,8 +7,6 @@ import java.text.SimpleDateFormat;
 
 public class DownloadBillsRequest {
 
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
     public DownloadBillsRequest(Builder builder) {
         if (CommonUtil.isEmpty(builder.merchantID)) {
             throw new IllegalArgumentException("init com.lehuipay.leona.model.DownloadBillsRequest, merchantID should not be empty");
@@ -19,6 +17,7 @@ public class DownloadBillsRequest {
         }
 
         try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             format.setLenient(false);
             format.parse(CommonUtil.NVLL(builder.date));
             if (builder.date.length() != 10) {

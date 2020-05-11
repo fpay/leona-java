@@ -4,9 +4,9 @@ import com.lehuipay.leona.utils.CommonUtil;
 
 public class Options {
 
-    public Options(String agentID, String agentKey, String partnerPriKey, String lhPubKey, String encryptionLevel, String encryptionAccept, String secretKey) {
+    public Options(String agentID, String agentKey, String agentPrivateKey, String lehuipayPublicKey, String encryptionLevel, String encryptionAccept, String secretKey) {
         if (CommonUtil.NVLL(encryptionLevel).equals(Const.HEADER_ENCRYPTION_LEVEL_L1) &&
-                (CommonUtil.isEmpty(partnerPriKey) || CommonUtil.isEmpty(lhPubKey))) {
+                (CommonUtil.isEmpty(agentPrivateKey) || CommonUtil.isEmpty(lehuipayPublicKey))) {
             throw new IllegalArgumentException("partnerPriKey and lhPubKey should not be empty when encryptionLevel == 'L1'");
         }
 
@@ -21,8 +21,8 @@ public class Options {
 
         this.agentID = agentID;
         this.agentKey = agentKey;
-        this.partnerPriKey = partnerPriKey;
-        this.lhPubKey = lhPubKey;
+        this.agentPrivateKey = agentPrivateKey;
+        this.lehuipayPublicKey = lehuipayPublicKey;
         this.encryptionLevel = encryptionLevel;
         this.encryptionAccept = encryptionAccept;
         this.secretKey = secretKey;
@@ -32,9 +32,9 @@ public class Options {
 
     private final String agentKey;                // 合作伙伴密钥，用于数据签名
 
-    private final String partnerPriKey;           // 合作伙伴私钥
+    private final String agentPrivateKey;           // 合作伙伴私钥
 
-    private final String lhPubKey;                // 乐惠公钥
+    private final String lehuipayPublicKey;                // 乐惠公钥
 
     private final String encryptionLevel;         // 加密等级
 
@@ -50,12 +50,12 @@ public class Options {
         return agentKey;
     }
 
-    public String getPartnerPriKey() {
-        return partnerPriKey;
+    public String getAgentPrivateKey() {
+        return agentPrivateKey;
     }
 
-    public String getLhPubKey() {
-        return lhPubKey;
+    public String getLehuipayPublicKey() {
+        return lehuipayPublicKey;
     }
 
     public String getEncryptionLevel() {

@@ -30,16 +30,16 @@ import java.util.Date;
 
 public class LeonaClientTest {
 
-    final private static String agent_id = "8888";
-    final private static String agent_key = "QWER1234567ASDF"; //
+    final private static String agent_id = "9527";
+    final private static String agent_key = "6nQjbXqPC;GvW3H%";
     final private static String secret_key = "";
     final private static String merchantID = "460";
 
-//    final private String cliPriKeyFile = "./src/test/resources/stating_cli_rsa_private_key.pem";
-//    final private String serPubKeyFile = "./src/test/resources/stating_lh_rsa_public_key.pem";
+    final private String agentPrivateKeyFile = "./src/test/resources/stating_cli_rsa_private_key.pem";
+    final private String lehuipayPublicKeyFile = "./src/test/resources/stating_lh_rsa_public_key.pem";
 
-    final private String cliPriKeyFile = "./src/test/resources/pkcs8_cli_rsa_private_key.pem";
-    final private String serPubKeyFile = "./src/test/resources/pkcs8_lh_rsa_public_key.pem";
+//    final private String agentPrivateKeyFile = "./src/test/resources/pkcs8_cli_rsa_private_key.pem";
+//    final private String lehuipayPublicKeyFile = "./src/test/resources/pkcs8_lh_rsa_public_key.pem";
 
     Client client;
 
@@ -48,8 +48,8 @@ public class LeonaClientTest {
         client = LeonaClient.builder()
                 .setAgentID(agent_id)
                 .setAgentKey(agent_key)
-                .setPartnerPriKey(cliPriKeyFile)
-                .setLhPubKey(serPubKeyFile)
+                .setAgentPrivateKey(agentPrivateKeyFile)
+                .setLehuipayPublicKey(lehuipayPublicKeyFile)
 //                .setSecretKey(secret_key)
                 .setEncryptionLevel(Const.HEADER_ENCRYPTION_LEVEL_L1)
 //                .setEncryptionLevel(Const.HEADER_ENCRYPTION_LEVEL_L2)
@@ -84,7 +84,7 @@ public class LeonaClientTest {
             final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("2")
-                    .setOrderNo("20200313000000000001")
+                    .setOrderNo("20200413000000000002")
                     .setAmount(1)
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
@@ -114,9 +114,9 @@ public class LeonaClientTest {
             final MicropayPaymentRequest request = MicropayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("2")
-                    .setOrderNo("20200313000000000003")
+                    .setOrderNo("20200313000000001003")
                     .setAmount(2)
-                    .setAuthCode("281848450128437300")
+                    .setAuthCode("134575286096065622")
                     .setClientIP("127.0.0.1")
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
@@ -148,9 +148,9 @@ public class LeonaClientTest {
             final MicropayPaymentRequest request = MicropayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("2")
-                    .setOrderNo("20200319000000000003")
+                    .setOrderNo("20200413000000000003")
                     .setAmount(2)
-                    .setAuthCode("134740991720945053")
+                    .setAuthCode("134518567872081940")
                     .setClientIP("127.0.0.1")
                     .setTags(new String[]{"tag1", "tag2"})
                     .build();
@@ -191,7 +191,7 @@ public class LeonaClientTest {
         try {
             final QueryPaymentRequest request = QueryPaymentRequest.builder()
                     .setMerchantID(merchantID)
-                    .setOrderNo("202004080000000000009")
+                    .setOrderNo("20200313000000000009")
                     .setTransactionID(null)
                     .build();
             final QueryPaymentResponse response = client.queryPayment(request);
@@ -263,8 +263,8 @@ public class LeonaClientTest {
         try {
             final RefundRequest request = RefundRequest.builder()
                     .setMerchantID(merchantID)
-                    .setOrderNo("20200313000000000004")
-                    .setRefundNo("Re_20200313000000000004")
+                    .setOrderNo("20200313000000000009")
+                    .setRefundNo("Re_20200313000000000009")
                     .setAmount(1)
                     .build();
             final RefundResponse response = client.createRefund(request);
@@ -294,8 +294,8 @@ public class LeonaClientTest {
         try {
             final RefundRequest request = RefundRequest.builder()
                     .setMerchantID(merchantID)
-                    .setOrderNo("20200313000000000004")
-                    .setRefundNo("Re_20200313000000000004")
+                    .setOrderNo("20200413000000000003")
+                    .setRefundNo("Re_20200413000000000003")
                     .setAmount(1)
                     .build();
             client.createRefund(request, (e, data) -> {
@@ -336,7 +336,7 @@ public class LeonaClientTest {
         try {
             final QueryRefundRequest request = QueryRefundRequest.builder()
                     .setMerchantID(merchantID)
-                    .setRefundNo("207712193487548001010")
+                    .setRefundNo("Re_20200413000000000003")
                     .build();
             final QueryRefundResponse response = client.queryRefund(request);
             System.out.println(response);
@@ -365,7 +365,7 @@ public class LeonaClientTest {
         try {
             final QueryRefundRequest request = QueryRefundRequest.builder()
                     .setMerchantID(merchantID)
-                    .setRefundNo("207712193487548001010")
+                    .setRefundNo("Re_20200413000000000003")
                     .build();
             client.queryRefund(request, (e, data) -> {
                 if (e != null) {
@@ -561,7 +561,7 @@ public class LeonaClientTest {
             final JspayPaymentRequest request = JspayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("10093")
-                    .setOrderNo("202003180000000000003")
+                    .setOrderNo("202003180000000023003")
                     .setAmount(1)
                     .setClientType(Const.CLIENT_TYPE_WEIXIN)
                     .setAppID("wxb3eb769caaf296c8")
@@ -586,7 +586,7 @@ public class LeonaClientTest {
             final JspayPaymentRequest request = JspayPaymentRequest.builder()
                     .setMerchantID(merchantID)
                     .setTerminalID("10093")
-                    .setOrderNo("202003180000000000001")
+                    .setOrderNo("202004180000000033003")
                     .setAmount(1)
                     .setClientType(Const.CLIENT_TYPE_WEIXIN)
                     .setAppID("wxb3eb769caaf296c8")
@@ -619,7 +619,7 @@ public class LeonaClientTest {
         try {
             final DownloadBillsRequest request = DownloadBillsRequest.builder()
                     .setMerchantID(merchantID)
-                    .setDate("2020-03-03")
+                    .setDate("2020-05-03")
                     .build();
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             client.downloadBills(request, outputStream);

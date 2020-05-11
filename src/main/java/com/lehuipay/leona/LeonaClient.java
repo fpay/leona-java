@@ -34,8 +34,8 @@ import java.io.OutputStream;
  *         Client client = LeonaClient.builder()
  *                 .setAgentID(agent_id)
  *                 .setAgentKey(agent_key)
- * //                .setPartnerPriKey(cliPriKeyFilePath)
- * //                .setLhPubKey(serPubKeyFilePath)
+ * //                .setAgentPrivateKey(agentPrivateKeyPath)
+ * //                .setLehuipayPublicKey(lehuipayPublicKeyPath)
  * //                .setSecretKey(secret_key)
  * //                .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
  * //                .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
@@ -99,8 +99,8 @@ public class LeonaClient implements Client {
     private LeonaClient(Builder builder) {
         this.options = new Options(builder.agentID,
                 builder.agentKey,
-                builder.partnerPriKey,
-                builder.lhPubKey,
+                builder.agentPrivateKey,
+                builder.lehuipayPublicKey,
                 builder.encryptionLevel,
                 builder.encryptionAccept,
                 builder.secretKey);
@@ -117,8 +117,8 @@ public class LeonaClient implements Client {
     public static class Builder {
         private String agentID;
         private String agentKey;
-        private String partnerPriKey;
-        private String lhPubKey;
+        private String agentPrivateKey;
+        private String lehuipayPublicKey;
         private String encryptionLevel;
         private String encryptionAccept;
         private String secretKey;
@@ -144,30 +144,30 @@ public class LeonaClient implements Client {
         /**
          * 加载私钥
          *
-         * @param partnerPriKeyFilePath 私钥文件路径
+         * @param agentPrivateKeyPath 私钥文件路径
          * @return LeonaClient构造器
          * @throws IOException 读取文件产生的IO异常
          */
-        public Builder setPartnerPriKey(String partnerPriKeyFilePath) throws IOException {
-            if (CommonUtil.isEmpty(partnerPriKeyFilePath)) {
-                throw new IllegalArgumentException("partnerPriKeyFilePath should not be empty");
+        public Builder setAgentPrivateKey(String agentPrivateKeyPath) throws IOException {
+            if (CommonUtil.isEmpty(agentPrivateKeyPath)) {
+                throw new IllegalArgumentException("agentPrivateKeyPath should not be empty");
             }
-            this.partnerPriKey = CommonUtil.readPemFile2String(partnerPriKeyFilePath);
+            this.agentPrivateKey = CommonUtil.readPemFile2String(agentPrivateKeyPath);
             return this;
         }
 
         /**
          * 加载公钥
          *
-         * @param lhPubKeyFilePath 公钥文件路径
+         * @param lehuipayPublicKeyPath 公钥文件路径
          * @return LeonaClient构造器
          * @throws IOException 读取文件产生的IO异常
          */
-        public Builder setLhPubKey(String lhPubKeyFilePath) throws IOException {
-            if (CommonUtil.isEmpty(lhPubKeyFilePath)) {
-                throw new IllegalArgumentException("lhPubKeyFilePath should not be empty");
+        public Builder setLehuipayPublicKey(String lehuipayPublicKeyPath) throws IOException {
+            if (CommonUtil.isEmpty(lehuipayPublicKeyPath)) {
+                throw new IllegalArgumentException("lehuipayPublicKeyPath should not be empty");
             }
-            this.lhPubKey = CommonUtil.readPemFile2String(lhPubKeyFilePath);
+            this.lehuipayPublicKey = CommonUtil.readPemFile2String(lehuipayPublicKeyPath);
             return this;
         }
 
