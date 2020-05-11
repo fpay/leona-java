@@ -6,9 +6,9 @@ LEhuipay OpeN Api SDK for Java
 ```
 // maven
 <dependency>
-    <groupId>com.github.roujiamo-cold</groupId>
-    <artifactId>leona-java</artifactId>
-    <version>1.1.3</version>
+    <groupId>com.lehuipay.open</groupId>
+    <artifactId>leona</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ``` 
 
@@ -17,8 +17,8 @@ LEhuipay OpeN Api SDK for Java
 Client client = LeonaClient.builder()
       .setAgentID(agent_id)
       .setAgentKey(agent_key)
-//      .setPartnerPriKey(cliPriKeyFilePath)
-//      .setLhPubKey(serPubKeyFilePath)
+//      .setAgentPrivateKey(agentPrivateKeyPath)
+//      .setLehuipayPublicKey(lehuipayPublicKeyPath)
 //      .setSecretKey(secret_key)
 //      .setEncryptionLevel(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L1)
 //      .setEncryptionAccept(Const.HEADER_X_LEHUI_ENCRYPTION_LEVEL_L0)
