@@ -25,30 +25,23 @@ Client client = LeonaClient.builder()
        .build();
 
 // 异步
-try {
-    final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
-            .setMerchantID(merchantID)
-            .setTerminalID("2")
-            .setOrderNo("20200313000000000001")
-            .setAmount(1)
-            .setTags(new String[]{"tag1", "tag2"})
-            .build();
-    client.createQRCodePayment(request, (e, data) -> {
-        if (e != null) {
-            System.err.println(e);
-            return;
-        }
-        System.out.println(data);
-    });
-} catch (LeonaException e) {
-    // 一般而言需要记录日志
-    System.err.println(e);
-    // 若需要详细错误信息, 请使用如下方法
-//    String type = e.getType();
-//    String code = e.getCode();
-//    String message = e.getMessage();
-
-}
+final QRCodePaymentRequest request = QRCodePaymentRequest.builder()
+        .setMerchantID(merchantID)
+        .setTerminalID("2")
+        .setOrderNo("20200313000000000001")
+        .setAmount(1)
+        .setTags(new String[]{"tag1", "tag2"})
+        .build();
+client.createQRCodePayment(request, (e, data) -> {
+    if (e != null) {
+        String type = e.getType();
+        String code = e.getCode();
+        String message = e.getMessage();
+        // log...
+        return;
+    }
+    // data...
+});
 
 // 同步
 try {
@@ -60,8 +53,11 @@ try {
             .setTags(new String[]{"tag1", "tag2"})
             .build();
     final QRCodePayResponse response = client.createQRCodePayment(request);
-    System.out.println(response);
+    // response...
 } catch (LeonaException e) {
-    System.err.println(e);
+    String type = e.getType();
+    String code = e.getCode();
+    String message = e.getMessage();
+    // log...
 }
 ```

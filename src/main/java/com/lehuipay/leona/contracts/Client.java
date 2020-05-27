@@ -32,50 +32,50 @@ public interface Client {
     // 二维码支付
     QRCodePaymentResponse createQRCodePayment(QRCodePaymentRequest req) throws LeonaException;
 
-    void createQRCodePayment(QRCodePaymentRequest req, Callback<QRCodePaymentResponse> callback) throws LeonaException;
+    void createQRCodePayment(QRCodePaymentRequest req, Callback<QRCodePaymentResponse> callback);
 
     // 刷卡支付
     MicropayPaymentResponse createMicropayPayment(MicropayPaymentRequest req) throws LeonaException;
 
-    void createMicropayPayment(MicropayPaymentRequest req, Callback<MicropayPaymentResponse> callback) throws LeonaException;
+    void createMicropayPayment(MicropayPaymentRequest req, Callback<MicropayPaymentResponse> callback);
 
     // 查询交易
     QueryPaymentResponse queryPayment(QueryPaymentRequest req) throws LeonaException;
 
-    void queryPayment(QueryPaymentRequest req, Callback<QueryPaymentResponse> callback) throws LeonaException;
+    void queryPayment(QueryPaymentRequest req, Callback<QueryPaymentResponse> callback);
 
     // 退款
     RefundResponse createRefund(RefundRequest req) throws LeonaException;
 
-    void createRefund(RefundRequest req, Callback<RefundResponse> callback) throws LeonaException;
+    void createRefund(RefundRequest req, Callback<RefundResponse> callback);
 
     // 查询退款
     QueryRefundResponse queryRefund(QueryRefundRequest req) throws LeonaException;
 
-    void queryRefund(QueryRefundRequest req, Callback<QueryRefundResponse> callback) throws LeonaException;
+    void queryRefund(QueryRefundRequest req, Callback<QueryRefundResponse> callback);
 
     // 查询余额
     QueryBalanceResponse queryBalance(QueryBalanceRequest req) throws LeonaException;
 
-    void queryBalance(QueryBalanceRequest req, Callback<QueryBalanceResponse> callback) throws LeonaException;
+    void queryBalance(QueryBalanceRequest req, Callback<QueryBalanceResponse> callback);
 
     // 手动提现
     WithdrawResponse withdraw(WithdrawRequest req) throws LeonaException;
 
-    void withdraw(WithdrawRequest req, Callback<WithdrawResponse> callback) throws LeonaException;
+    void withdraw(WithdrawRequest req, Callback<WithdrawResponse> callback);
 
     // 查询提现结果
     QueryWithdrawalResponse queryWithdrawal(QueryWithdrawalRequest req) throws LeonaException;
 
-    void queryWithdrawal(QueryWithdrawalRequest req, Callback<QueryWithdrawalResponse> callback) throws LeonaException;
+    void queryWithdrawal(QueryWithdrawalRequest req, Callback<QueryWithdrawalResponse> callback);
 
     // 账单下载
     void downloadBills(DownloadBillsRequest req, OutputStream dst) throws LeonaException;
 
-    void downloadBills(DownloadBillsRequest req, Callback<OutputStream> callback) throws LeonaException;
+    void downloadBills(DownloadBillsRequest req, Callback<OutputStream> callback);
 
     // 消费者扫商家二维码支付
     JspayPaymentResponse createJspayPayment(JspayPaymentRequest req) throws LeonaException;
 
-    void createJspayPayment(JspayPaymentRequest req, Callback<JspayPaymentResponse> callback) throws LeonaException;
+    void createJspayPayment(JspayPaymentRequest req, Callback<JspayPaymentResponse> callback);
 }

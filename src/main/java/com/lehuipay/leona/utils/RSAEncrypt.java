@@ -46,7 +46,6 @@ public class RSAEncrypt {
      * 从字符串中加载私钥
      *
      * @param privateKeyStr 私钥数据字符串
-     * @return
      * @throws IllegalArgumentException 私钥格式非法
      */
     public static RSAPrivateKey getPrivateKey(String privateKeyStr) {
@@ -67,7 +66,6 @@ public class RSAEncrypt {
      *
      * @param publicKey     公钥
      * @param plainTextData 明文数据
-     * @return
      * @throws InvalidKeyException
      * @throws IllegalBlockSizeException
      * @throws BadPaddingException

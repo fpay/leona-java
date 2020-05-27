@@ -89,7 +89,6 @@ public class CommonUtil {
      * 生成固定长度随机串
      *
      * @param length
-     * @return
      */
     public static String randomStr(int length) {
         String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

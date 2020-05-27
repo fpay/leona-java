@@ -217,10 +217,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createQRCodePayment(QRCodePaymentRequest req, Callback<QRCodePaymentResponse> callback) throws LeonaException {
+    public void createQRCodePayment(QRCodePaymentRequest req, Callback<QRCodePaymentResponse> callback) {
         httpClient.request("POST", Const.QRCODE_PAYMENT_URL, req, QRCodePaymentResponse.class, callback);
 
     }
@@ -241,10 +240,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createMicropayPayment(MicropayPaymentRequest req, Callback<MicropayPaymentResponse> callback) throws LeonaException {
+    public void createMicropayPayment(MicropayPaymentRequest req, Callback<MicropayPaymentResponse> callback) {
         httpClient.request("POST", Const.MICROPAY_PAYMENT_URL, req, MicropayPaymentResponse.class, callback);
     }
 
@@ -264,10 +262,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void queryPayment(QueryPaymentRequest req, Callback<QueryPaymentResponse> callback) throws LeonaException {
+    public void queryPayment(QueryPaymentRequest req, Callback<QueryPaymentResponse> callback) {
         httpClient.request("POST", Const.QUERY_PAYMENT_URL, req, QueryPaymentResponse.class, callback);
     }
 
@@ -287,10 +284,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createRefund(RefundRequest req, Callback<RefundResponse> callback) throws LeonaException {
+    public void createRefund(RefundRequest req, Callback<RefundResponse> callback) {
         httpClient.request("POST", Const.REFUND_URL, req, RefundResponse.class, callback);
     }
 
@@ -310,10 +306,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void queryRefund(QueryRefundRequest req, Callback<QueryRefundResponse> callback) throws LeonaException {
+    public void queryRefund(QueryRefundRequest req, Callback<QueryRefundResponse> callback) {
         httpClient.request("POST", Const.QUERY_REFUND_URL, req, QueryRefundResponse.class, callback);
     }
 
@@ -334,10 +329,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void queryBalance(QueryBalanceRequest req, Callback<QueryBalanceResponse> callback) throws LeonaException {
+    public void queryBalance(QueryBalanceRequest req, Callback<QueryBalanceResponse> callback) {
         httpClient.request("POST", Const.QUERY_BALANCE_URL, req, QueryBalanceResponse.class, callback);
     }
 
@@ -358,10 +352,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void withdraw(WithdrawRequest req, Callback<WithdrawResponse> callback) throws LeonaException {
+    public void withdraw(WithdrawRequest req, Callback<WithdrawResponse> callback) {
         httpClient.request("POST", Const.WITHDRAW_URL, req, WithdrawResponse.class, callback);
     }
 
@@ -382,10 +375,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void queryWithdrawal(QueryWithdrawalRequest req, Callback<QueryWithdrawalResponse> callback) throws LeonaException {
+    public void queryWithdrawal(QueryWithdrawalRequest req, Callback<QueryWithdrawalResponse> callback) {
         httpClient.request("POST", Const.QUERY_WITHDRAWAL_URL, req, QueryWithdrawalResponse.class, callback);
     }
 
@@ -393,7 +385,6 @@ public class LeonaClient implements Client {
      * 获取账单
      *
      * @param req 请求体
-     * @return 提现结果
      * @throws LeonaException 说明见类文档
      */
     @Override
@@ -406,10 +397,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void downloadBills(DownloadBillsRequest req, Callback<OutputStream> callback) throws LeonaException {
+    public void downloadBills(DownloadBillsRequest req, Callback<OutputStream> callback) {
         httpClient.download("POST", Const.DOWNLOAD_BILLS_URL, req, callback);
     }
 
@@ -430,10 +420,9 @@ public class LeonaClient implements Client {
      *
      * @param req 请求体
      * @param callback {@link com.lehuipay.leona.Callback}, 定义了请求失败与成功时应有的操作, 详见接口说明
-     * @throws LeonaException 说明见类文档
      */
     @Override
-    public void createJspayPayment(JspayPaymentRequest req, Callback<JspayPaymentResponse> callback) throws LeonaException {
+    public void createJspayPayment(JspayPaymentRequest req, Callback<JspayPaymentResponse> callback) {
         httpClient.request("POST", Const.JSPAY_PAYMENT_URL, req, JspayPaymentResponse.class, callback);
     }
 

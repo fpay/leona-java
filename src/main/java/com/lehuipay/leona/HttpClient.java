@@ -93,7 +93,7 @@ public class HttpClient {
      * @param <T>      httpRequestBody的泛型类
      * @param <R>      httpResponseBody的泛型类类
      */
-    public <T, R> void request(final String method, final String url, R data, Class<T> clazz, Callback<T> callback) throws LeonaException {
+    public <T, R> void request(final String method, final String url, R data, Class<T> clazz, Callback<T> callback) {
         final Request request = buildRequest(method, url, data);
 
         client.newCall(request).enqueue(new okhttp3.Callback() {
